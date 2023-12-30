@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+{% block content %}
+  {% if songs.items %}
+    <legend class="border-bottom mb-4">
+      All Songs
+    </legend>
+    <article class="media content-section">
+      <div class="media-body">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Title</th>
+              <th scope="col">Artist</th>
+              <th scope="col">Album</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for song in songs.items %}
+              <tr class="my-4">
+                <td scope="row">{{ ((songs.page - 1) * songs.per_page) + loop.index }}</td>
+                <td>
+                  <a href="{{ url_for('songs.song', song_id=song.id) }}"
+                     class="song-body text-decoration-none">{{ song.title }}</a>
+                </td>
+                <td>{{ song.artist }}</td>
+                <td>{{ song.album }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% if songs.pages > 1 %}
+          <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+              {% for page_num in songs.iter_pages() %}
+                {% if page_num %}
+                  {% if songs.page == page_num %}
+                    <li class="page-item active">
+                      <a class="page-link"
+                         href="{{ url_for('main.collection', page=page_num) }}">{{ page_num }}</a>
+                    </li>
+                  {% else %}
+                    <li class="page-item">
+                      <a class="page-link"
+                         href="{{ url_for('main.collection', page=page_num) }}">{{ page_num }}</a>
+                    </li>
+                  {% endif %}
+                {% else %}
+                  <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                  </li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </nav>
+        {% endif %}
+      </div>
+    </article>
+  {% else %}
+    <h2>All songs will appear here</h2>
+    <p class="text-muted">Please upload songs by clicking on upload button!</p>
+  {% endif %}
+{% endblock content %}

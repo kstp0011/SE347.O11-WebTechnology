@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block content %}
+  <div class="content-section">
+    <form method="post" enctype="multipart/form-data">
+      {{ form.hidden_tag() }}
+      <fieldset class="form-group mb-3">
+        <legend class="border-bottom mb-4">
+          Upload Song
+        </legend>
+        <div class="form-group">
+          {{ form.song.label(class='form-control-label') }}
+          {{ form.song(class='form-control') }}
+          {% if form.song.errors %}
+            {% for error in form.song.errors %}
+              <span class="text-danger">{{ error }}</span>
+              <br />
+            {% endfor %}
+          {% endif %}
+        </div>
+      </fieldset>
+      <div>{{ form.submit(class='btn btn-outline-info') }}</div>
+    </form>
+  </div>
+{% endblock content %}
