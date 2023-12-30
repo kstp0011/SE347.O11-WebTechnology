@@ -60,7 +60,7 @@ python manage.py create_db
 ##### To run the app
 
 ```bash
-python3 run.py
+python3 app.py
 ```
 
 The application can be accessed at `http://localhost:5000/` in a web browser.
