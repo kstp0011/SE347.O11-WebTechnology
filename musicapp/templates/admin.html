@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Admin</title>
+        <link rel="stylesheet" href="css/style.css" />
+    </head>
+
+    <body>
+        <div class="container">
+            <h1>Admin</h1>
+            <a href="index.php?action=logout">Logout</a>
+            <!-- List all users: -->
+            <h2>Users</h2>
+            <ul>
+                <?php foreach ($users as $user): ?>
+                <li>
+                    <?php echo $user['username']; ?>
+                    <a
+                        href="index.php?action=deleteUser&userId=<?php echo $user['id']; ?>"
+                        >Delete</a
+                    >
+                </li>
+                <?php endforeach; ?>
+            </ul>
+            <!-- List all songs: -->
+            <h2>Songs</h2>
+            <ul>
+                <?php foreach ($songs as $song): ?>
+                <li>
+                    <?php echo $song['title']; ?>
+                    <a
+                        href="index.php?action=deleteSong&songId=<?php echo $song['id']; ?>"
+                        >Delete</a
+                    >
+                </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    </body>
+</html>
