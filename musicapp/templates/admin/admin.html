@@ -1,0 +1,60 @@
+{% extends "admin/layout.html" %} {% block content %}
+<h1 class="my-4">All Users</h1>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Privilege</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>
+                    {% if user.is_manager %} Manager {% else %} User {% endif %}
+                </td>
+                <td>
+                    {% if user.is_manager %}
+                    <form
+                        action="{{ url_for('users.revoke_manager', user_id=user.id) }}"
+                        method="post">
+                        <button type="submit" class="btn btn-danger">
+                            Revoke
+                        </button>
+                    </form>
+                    {% else %}
+                    <form
+                        action="{{ url_for('users.grant_manager', user_id=user.id) }}"
+                        method="post">
+                        <button type="submit" class="btn btn-success">
+                            Grant
+                        </button>
+                    </form>
+                    {% endif %}
+                </td>
+                <td>
+                    <div>
+                        <form
+                            action="{{ url_for('users.confirm_delete', user_id=user.id, username=user.username) }}"
+                            method="post">
+                            <button type="submit" class="btn btn-danger">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}
