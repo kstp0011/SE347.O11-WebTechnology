@@ -8,6 +8,7 @@
                 <th>ID</th>
                 <th>username</th>
                 <th>Email</th>
+                <th>Role</th>
                 <th>Delete</th>
             </tr>
         </thead>
@@ -17,6 +18,9 @@
                 <td>{{ user.id }}</td>
                 <td>{{ user.username }}</td>
                 <td>{{ user.email }}</td>
+                <td>
+                    {% if user.is_manager %} Manager {% else %} User {% endif %}
+                </td>
                 <td>
                     <div>
                         <form
