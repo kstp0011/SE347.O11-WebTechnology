@@ -2,6 +2,7 @@ import os
 from flask import render_template, url_for, flash, redirect, request, send_file, abort, Blueprint, current_app as app
 from flask_login import current_user, login_required
 from sqlalchemy import or_
+from sqlalchemy.exc import SQLAlchemyError
 import eyed3
 
 from musicapp.models import Song
@@ -28,19 +29,61 @@ def upload():
         file_path = os.path.join(
             app.config['UPLOAD_FOLDER'], filename)
         audio = eyed3.load(file_path)
-
         title = audio.tag.title if audio.tag.title else "Unknown Title"
         artist = audio.tag.artist if audio.tag.artist else "Unknown Artist"
         album = audio.tag.album if audio.tag.album else "Unknown Album"
-
         song = Song(title=title, artist=artist,
                     album=album, owner=current_user, filename=filename)
         db.session.add(song)
-        db.session.commit()
-
+        try:
+            db.session.commit()
+        except SQLAlchemyError:
+            db.session.rollback()
+            os.remove(file_path)
+            flash('Error uploading song, retry', 'danger')
+            return redirect(url_for('songs.upload'))
         return redirect(url_for('songs.song_metadata', id=song.id))
-
     return render_template('upload_song.html', title='Upload Song', form=form)
+
+
+# @songs.route('/song/upload', methods=['GET', 'POST'])
+# @login_required
+# def upload():
+#     form = SongForm()
+#     if form.validate_on_submit():
+#         # process information form
+#         title = form.title.data
+#         artist = form.artist.data
+#         album = form.album.data
+
+#         # create song record in database
+#         song = Song(title=title, artist=artist,
+#                     album=album, owner=current_user)
+#         db.session.add(song)
+#         try:
+#             db.session.commit()
+#         except Exception:
+#             db.session.rollback()
+#             flash('Error uploading song, retry', 'danger')
+#             return redirect(url_for('songs.upload'))
+
+#         # save files
+#         song_file = form.song.data
+#         filename = save_song(song_file)
+#         file_path = os.path.join(
+#             app.config['UPLOAD_FOLDER'], filename)
+#         song_file.save(file_path)
+
+#         # load audio and extract metadata
+#         audio = eyed3.load(file_path)
+
+#         # upload file
+#         song.filename = filename
+#         db.session.commit()
+
+#         return redirect(url_for('songs.song_metadata', id=song.id))
+
+#     return render_template('upload_song.html', title='Upload Song', form=form)
 
 
 @songs.route('/song/upload/metadata/<int:id>', methods=['GET', 'POST'])
