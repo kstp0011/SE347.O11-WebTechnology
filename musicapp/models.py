@@ -16,6 +16,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
     songs = db.relationship('Song', backref='owner', lazy=True)
+    is_admin = db.Column(db.Boolean, default=False)
 
     def __repr__(self) -> str:
         return f"User('{self.username}', '{self.email}')"

@@ -4,6 +4,7 @@ from musicapp.models import User
 from musicapp import bcrypt, db
 from musicapp.users.forms import RegistrationForm, LoginForm, UpdateAccountForm, RequestResetForm, ResetPasswordForm
 from musicapp.users.utils import send_password_reset_email
+from musicapp.users.test import test
 
 users = Blueprint('users', __name__)
 
@@ -98,3 +99,8 @@ def reset_password(token):
         flash('Your password has been updated! Please login to continue.', 'success')
         return redirect(url_for('users.login'))
     return render_template('reset_password.html', title="Reset Password", form=form)
+
+
+@users.route('/test')
+def test():
+    return current_user
