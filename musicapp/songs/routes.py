@@ -86,8 +86,8 @@ def song(song_id):
 @login_required
 def delete(song_id):
     song = Song.query.get_or_404(song_id)
-    # only owner of song can delete it
-    if song.owner != current_user:
+    # admin, manager, owner of song can delete it
+    if song.owner != current_user and not current_user.is_admin and not current_user.is_manager:
         abort(403)
 
     song_title = song.title
