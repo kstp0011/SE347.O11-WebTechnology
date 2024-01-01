@@ -18,6 +18,7 @@ def create_admin():
     from musicapp import bcrypt
     import pwinput
 
+    username = input("Enter username: ")
     email = input("Enter email: ")
     # Check if user already exists
     if User.query.filter_by(email=email).first():
@@ -38,7 +39,7 @@ def create_admin():
 
     password = bcrypt.generate_password_hash(password).decode('utf-8')
 
-    user = User(username="admin",
+    user = User(username=username,
                 email=email, password=password, is_admin=True)
     
     db.session.add(user)

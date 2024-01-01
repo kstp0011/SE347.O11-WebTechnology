@@ -103,8 +103,14 @@ def reset_password(token):
 @users.route('/admin')
 @login_required
 def admin():
-    if current_user.is_admin:
-        return render_template('admin.html', title='Admin')
-    else:
+    # if current_user.is_admin:
+    #     return render_template('admin.html', title='Admin')
+    # else:
+    #     flash('You are not an admin!', 'danger')
+    #     return redirect(url_for('main.home'))
+    if not(current_user.is_admin):
         flash('You are not an admin!', 'danger')
         return redirect(url_for('main.home'))
+    
+    users = User.query.all()
+    return render_template('admin.html', title='Admin', users=users)
