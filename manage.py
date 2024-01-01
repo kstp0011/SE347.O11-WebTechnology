@@ -1,5 +1,7 @@
 from flask.cli import FlaskGroup
 from musicapp import create_app, db
+import os
+from musicapp.config import Config
 
 app = create_app()
 cli = FlaskGroup(create_app=create_app)
@@ -15,6 +17,11 @@ def create_db():
 def drop_db():
     """Drop all database tables."""
     db.drop_all()
+    # delete all files in upload folder
+    folder = Config.UPLOAD_FOLDER
+    for filename in os.listdir(folder):
+        file_path = os.path.join(folder, filename)
+        os.remove(file_path)
 
 
 @cli.command("create_admin")
@@ -30,7 +37,7 @@ def create_admin():
     if User.query.filter_by(email=email).first():
         print("Admin user already exists.")
         return
-    
+
     password = ''
     reinput_password = ' '
 
@@ -47,7 +54,7 @@ def create_admin():
 
     user = User(username=username,
                 email=email, password=password, is_admin=True, is_manager=True)
-    
+
     db.session.add(user)
     db.session.commit()
 
