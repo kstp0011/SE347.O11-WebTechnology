@@ -43,6 +43,10 @@ class Song(db.Model):
     filename = db.Column(db.String(150), nullable=False)
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
+    # in development
+    # genre = db.Column(db.String(50))
+    # cover = db.Column(db.String(150))
+
     def __repr__(self) -> str:
         return f"Song('{self.title}', '{self.artist}', '{self.album}', '{self.filename}', '{self.owner_id}')"
 
@@ -50,8 +54,9 @@ class Song(db.Model):
 class Artist(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), nullable=False)
-    songs = db.relationship('Song', backref='artist', lazy=True)
     image = db.Column(db.String(150))
+    songs = db.relationship('Song', backref=db.backref(
+        'artist', lazy=True))  # new line
 
     def __repr__(self) -> str:
-        return f"Artist('{self.name}', '{self.image}', '{self.songs}')"
+        return f"Artist('{self.name}', '{self.image}')"

@@ -133,7 +133,7 @@ def song(song_id):
 def delete(song_id):
     song = Song.query.get_or_404(song_id)
     # admin, manager, owner of song can delete it
-    if song.owner_id != current_user.id and not current_user.is_admin and not current_user.is_manager:
+    if song.owner != current_user and not current_user.is_admin and not current_user.is_manager:
         abort(403)
 
     song_title = song.title
