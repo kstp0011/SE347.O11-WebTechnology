@@ -4,15 +4,20 @@ body {
     margin-top: 5rem;
 }
 
+/* dark themes */
 body.dark-theme {
     background-color: #242424;
     color: #ffffff;
 }
-
 #theme-toggle {
     margin-right: 20px;
 }
+body.dark-theme .form-group div,
+body.dark-theme .form-group legend {
+    color: #242424 !important;
+}
 
+/* ends */
 h1,
 h2,
 h3,
