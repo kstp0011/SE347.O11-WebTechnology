@@ -3,4 +3,4 @@ env/
 test.py
 
 musicapp/static/uploads/
-instance/site.db/
+instance/site.db
