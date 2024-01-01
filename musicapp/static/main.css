@@ -16,6 +16,9 @@ body.dark-theme .form-group div,
 body.dark-theme .form-group legend {
     color: #212529 !important;
 }
+body.dark-theme .article-metadata legend {
+    color: #212529 !important;
+}
 
 /* ends */
 h1,
