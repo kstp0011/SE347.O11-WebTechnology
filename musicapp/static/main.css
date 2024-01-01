@@ -1,12 +1,12 @@
 body {
     background: #fafafa;
-    color: #333333;
+    color: #212529;
     margin-top: 5rem;
 }
 
 /* dark themes */
 body.dark-theme {
-    background-color: #242424;
+    background-color: #212529;
     color: #ffffff;
 }
 #theme-toggle {
@@ -14,7 +14,7 @@ body.dark-theme {
 }
 body.dark-theme .form-group div,
 body.dark-theme .form-group legend {
-    color: #242424 !important;
+    color: #212529 !important;
 }
 
 /* ends */
@@ -24,8 +24,15 @@ h3,
 h4,
 h5,
 h6 {
-    color: #444444;
+    color: #212529;
 }
+
+/* nav baradjustment */
+nav {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+}
+/* ends */
 
 .bg-steel {
     background-color: #5f788a;
