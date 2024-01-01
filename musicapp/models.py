@@ -42,22 +42,25 @@ class Song(db.Model):
     album = db.Column(db.String(50))
     filename = db.Column(db.String(150), nullable=False)
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    artist_id = db.Column(db.Integer, db.ForeignKey('artist.id'))
+    artist_id = db.Column(db.Integer, db.ForeignKey('artist_info.id'))
+    date_uploaded = db.Column(db.DateTime, nullable=False,
+                              default=db.func.current_timestamp())
 
-    artist_key = db.relationship('Artist', backref=db.backref(
-        'song_relate', lazy=True))  # new line
+    artist_info = db.relationship(
+        'Artist_info', backref=db.backref('songs', lazy=True))
+
     # in development
     # genre = db.Column(db.String(50))
     # cover = db.Column(db.String(150))
 
     def __repr__(self) -> str:
-        return f"Song('{self.title}', '{self.artist}', '{self.album}', '{self.filename}', '{self.owner_id}')"
+        return f"Song('{self.title}', '{self.artist}', '{self.album}', '{self.filename}', '{self.owner_id}', '{self.artist_id}')"
 
 
-class Artist(db.Model):
+class Artist_info(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), nullable=False)
     image = db.Column(db.String(150))
 
     def __repr__(self) -> str:
-        return f"Artist('{self.name}', '{self.image}')"
+        return f"Artist_info('{self.name}', '{self.image}')"
