@@ -114,3 +114,26 @@ def admin():
     
     users = User.query.all()
     return render_template('admin.html', title='Admin', users=users)
+
+
+@users.route('/admin/delete/<int:user_id>', methods=['POST'])
+@login_required
+def delete(user_id):
+    if not(current_user.is_admin):
+        flash('You are not an admin!', 'danger')
+        return redirect(url_for('main.home'))
+    
+    user = User.query.get_or_404(user_id)
+    # only admin can delete user
+    if user.is_admin:
+        flash('You cannot delete an admin!', 'danger')
+        return redirect(url_for('users.admin'))
+
+    user_username = user.username
+
+    # delete the user from database
+    db.session.delete(user)
+    db.session.commit()
+
+    flash(f'User `{user_username}` has been deleted!', 'success')
+    return redirect(url_for('users.admin'))
