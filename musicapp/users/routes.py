@@ -108,7 +108,17 @@ def admin():
         return redirect(url_for('main.home'))
     
     users = User.query.all()
-    return render_template('admin.html', title='Admin', users=users)
+    return render_template('admin/admin.html', title='Admin', users=users)
+
+
+@users.route('/admin/confirm_delete/<int:user_id>/<string:username>' , methods=['POST'])
+@login_required
+def confirm_delete(user_id, username):
+    if not(current_user.is_admin):
+        flash('You are not an admin!', 'danger')
+        return redirect(url_for('main.home'))
+    
+    return render_template('admin/confirm_delete.html', title='Confirm Delete', user_id=user_id, username=username)
 
 
 @users.route('/admin/delete/<int:user_id>', methods=['POST'])
