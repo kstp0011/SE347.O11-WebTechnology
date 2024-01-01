@@ -11,6 +11,12 @@ def create_db():
     db.create_all()
 
 
+@cli.command("drop_db")
+def drop_db():
+    """Drop all database tables."""
+    db.drop_all()
+
+
 @cli.command("create_admin")
 def create_admin():
     """Create admin user."""
@@ -40,7 +46,7 @@ def create_admin():
     password = bcrypt.generate_password_hash(password).decode('utf-8')
 
     user = User(username=username,
-                email=email, password=password, is_admin=True)
+                email=email, password=password, is_admin=True, is_manager=True)
     
     db.session.add(user)
     db.session.commit()

@@ -103,11 +103,6 @@ def reset_password(token):
 @users.route('/admin')
 @login_required
 def admin():
-    # if current_user.is_admin:
-    #     return render_template('admin.html', title='Admin')
-    # else:
-    #     flash('You are not an admin!', 'danger')
-    #     return redirect(url_for('main.home'))
     if not(current_user.is_admin):
         flash('You are not an admin!', 'danger')
         return redirect(url_for('main.home'))
@@ -125,8 +120,8 @@ def delete(user_id):
     
     user = User.query.get_or_404(user_id)
     # only admin can delete user
-    if user.is_admin:
-        flash('You cannot delete an admin!', 'danger')
+    if user.is_admin or user.is_manager:
+        flash('You cannot delete admin or manager!', 'danger')
         return redirect(url_for('users.admin'))
 
     user_username = user.username
@@ -136,4 +131,39 @@ def delete(user_id):
     db.session.commit()
 
     flash(f'User `{user_username}` has been deleted!', 'success')
+    return redirect(url_for('users.admin'))
+
+
+@users.route('/admin/grant_manager/<int:user_id>', methods=['POST'])
+@login_required
+def grant_manager(user_id):
+    if not(current_user.is_admin):
+        flash('You are not an admin!', 'danger')
+        return redirect(url_for('main.home'))
+    
+    user = User.query.get_or_404(user_id)
+
+    user.is_manager = True
+    db.session.commit()
+
+    flash(f'User `{user.username}` has been granted manager!', 'success')
+    return redirect(url_for('users.admin'))
+
+
+@users.route('/admin/revoke_manager/<int:user_id>', methods=['POST'])
+@login_required
+def revoke_manager(user_id):
+    if not(current_user.is_admin):
+        flash('You are not an admin!', 'danger')
+        return redirect(url_for('main.home'))
+    
+    user = User.query.get_or_404(user_id)
+    if user.is_admin:
+        flash('You cannot revoke admin!', 'danger')
+        return redirect(url_for('users.admin'))
+
+    user.is_manager = False
+    db.session.commit()
+
+    flash(f'User `{user.username}` has been revoked manager!', 'success')
     return redirect(url_for('users.admin'))
