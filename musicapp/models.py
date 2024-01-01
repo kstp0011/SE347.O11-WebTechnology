@@ -45,3 +45,13 @@ class Song(db.Model):
 
     def __repr__(self) -> str:
         return f"Song('{self.title}', '{self.artist}', '{self.album}', '{self.filename}', '{self.owner_id}')"
+
+
+class Artist(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(150), nullable=False)
+    songs = db.relationship('Song', backref='artist', lazy=True)
+    image = db.Column(db.String(150))
+
+    def __repr__(self) -> str:
+        return f"Artist('{self.name}', '{self.image}', '{self.songs}')"
