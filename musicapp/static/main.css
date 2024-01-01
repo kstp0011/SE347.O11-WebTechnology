@@ -4,6 +4,15 @@ body {
     margin-top: 5rem;
 }
 
+body.dark-theme {
+    background-color: #242424;
+    color: #ffffff;
+}
+
+#theme-toggle {
+    margin-right: 20px;
+}
+
 h1,
 h2,
 h3,
