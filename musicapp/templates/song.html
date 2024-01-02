@@ -1,23 +1,42 @@
 {% extends "layout.html" %} {% block content %} {% if song %}
 <article class="media content-section">
     <div class="media-body">
-        <div class="article-metadata">
-            <legend class="mb-1">{{ song.title }}</legend>
-            <p class="text-muted">
-                By <strong>{{ song.artist }}</strong> from
-                <strong>{{ song.album }}</strong>
-            </p>
+        <div
+            class="container"
+            style="display: flex; justify-content: space-between">
+            <div class="article-metadata" style="flex: 7">
+                <form action="" method="post">
+                    <button type="submit" class="edit-button">
+                        Edit
+                    </button>
+                </form>
+                <legend class="mb-1">{{ song.title }}</legend>
+                <p class="text-muted">
+                    By <strong>{{ song.artist }}</strong> <br />
+                    From <strong>{{ song.album }}</strong>
+                </p>
+            </div>
+
+            <div
+                class="container"
+                style="
+                    flex: 3;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    margin: 5px;
+                ">
+                <img
+                    src="{{ url_for('static', filename='Images/MusicLib_Logo.PNG') }}"
+                    class="img-fluid"
+                    style="border-radius: 10px" />
+            </div>
         </div>
-        {% if song.id > 1 %}
-            <a href="{{ url_for('songs.song', song_id=song.id - 1) }}">Previous Song</a>
-        {% endif %}
-        {% if songs[-1].id != song.id %}
-            <a href="{{ url_for('songs.song', song_id=song.id + 1) }}">Next Song</a>
-        {% endif %}
+
         <audio
-            id="audioPlayer"
             controls
             autoplay
+            loop
             controlslist="nodownload"
             class="w-100 mt-2 mb-2">
             <source src="{{ music }}" type="audio/mp3" />
@@ -25,20 +44,12 @@
             <source src="{{ music }}" type="audio/wav" />
             Your browser does not support the audio tag.
         </audio>
-
-        <script>
-            document.getElementById('audioPlayer').addEventListener('ended', function() {
-                // Assuming song.id is available in the template context
-                var nextSongId = {{ song.id }} + 1;
-                var baseUrl = "{{ url_for('songs.song', song_id=1) }}";
-                var nextSongUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/') + 1) + nextSongId;
-                window.location.href = nextSongUrl;
-            }, false);
-        </script>
         <div class="btns">
             <a
                 class="btn btn-outline-info"
-                href="{{ url_for('songs.download', song_id = song.id) }}">Download</a>
+                href="{{ url_for('songs.download', song_id = song.id) }}"
+                >Download</a
+            >
             {% if song.owner == current_user or current_user.is_admin or
             current_user.is_manager %}
             <button
@@ -50,14 +61,6 @@
             </button>
             {% endif %}
         </div>
-    </div>
-    <div class="sidebar">
-        <h2>Next Songs</h2>
-        <ul>
-            {% for next_song in songs %}
-                <li>{{ next_song.title }}</li>
-            {% endfor %}
-        </ul>
     </div>
 </article>
 <!-- Modal -->
