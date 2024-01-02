@@ -182,7 +182,10 @@ def song(song_id):
     song = Song.query.get_or_404(song_id)
     song_file = url_for('static', filename='uploads/' + song.filename)
     songs = Song.query.order_by(Song.id).all()
-    return render_template('song.html', song=song, music=song_file, songs=songs)
+    next_song = Song.query.filter(Song.id > song_id).first()
+    prev_song = Song.query.filter(
+        Song.id < song_id).order_by(Song.id.desc()).first()
+    return render_template('song.html', song=song, music=song_file, songs=songs, next_song=next_song, prev_song=prev_song)
 
 
 @songs.route('/song/edit/<int:song_id>', methods=['GET', 'POST'])
@@ -192,13 +195,11 @@ def edit(song_id):
     song = Song.query.get_or_404(song_id)
     if song.owner != current_user:
         abort(403)
-    
 
     if form.validate_on_submit():
         title = form.title.data if form.title.data else "Unknown Title"
         artist_name = form.artist.data if form.artist.data else "Unknown Artist"
         album = form.album.data if form.album.data else "Unknown Album"
-
 
         artist_info = Artist_info.query.filter_by(name=artist_name).first()
 

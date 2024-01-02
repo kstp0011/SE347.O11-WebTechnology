@@ -46,7 +46,6 @@
             <source src="{{ music }}" type="audio/wav" />
             Your browser does not support the audio tag.
         </audio>
-
         <script>
             document.getElementById('audioPlayer').addEventListener('ended', function() {
                 // Assuming song.id is available in the template context
@@ -56,16 +55,16 @@
                 window.location.href = nextSongUrl;
             }, false);
         </script>
-        {% if song.id > 1 %}
             <div class="btns"> 
-                <a class="btn btn-outline-info" align="left"
-                    href="{{ url_for('songs.song', song_id=song.id - 1) }}">Previous
-                    Song</a>
+                {% if prev_song %}
+                    <a class="btn btn-outline-info" align="left"
+                        href="{{ url_for('songs.song', song_id=prev_song.id) }}">Previous
+                        Song</a>
                 {% endif %}
-                {% if songs[-1].id != song.id %}
-                <a class="btn btn-outline-info" align="right"
-                    href="{{ url_for('songs.song', song_id=song.id + 1) }}">Next
-                    Song</a>
+                {% if next_song %}
+                    <a class="btn btn-outline-info" align="right"
+                        href="{{ url_for('songs.song', song_id=next_song.id) }}">Next
+                        Song</a>
                 {% endif %}
             </div>
             <div class="btns">
@@ -82,6 +81,14 @@
                     Delete
                 </button>
                 {% endif %}
+            </div>
+            <div class="article-metadata" style="flex: 7; position: relative;">
+                <legend class="mb-1"> Related Songs </legend>
+                <ul class="song-list">
+                    {% for next_song in songs %}
+                        <li><a class="song-link" href="{{ url_for('songs.song', song_id=next_song.id) }}">{{ next_song.title }}</a></li>
+                    {% endfor %}
+                </ul>
             </div>
         </div>
     </article>
@@ -121,14 +128,6 @@
                     </form>
                 </div>
             </div>
-        </div>
-        <div class="sidebar">
-            <h2>Next Songs</h2>
-            <ul>
-                {% for next_song in songs %}
-                <li>{{ next_song.title }}</li>
-                {% endfor %}
-            </ul>
         </div>
     </div>
     {% else %}

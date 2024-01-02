@@ -99,8 +99,65 @@ a.article-title:hover {
 .media-body {
     flex: 1;
 }
+/* dark mode for media-body */
+/* body.dark-theme .media-body {
+    color: #000000;
+    flex: 1;
+    
+} */
+
+/* music list sidebar */
 
 .sidebar {
-    width: 200px;
-    margin-left: 20px;
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.sidebar h2 {
+    margin-top: 0;
+    color: #333;
+}
+
+.sidebar ul {
+    padding-left: 20px;
+}
+
+.sidebar ul li {
+    margin-bottom: 10px;
+}
+
+.song-control {
+    display: block;
+    margin-bottom: 10px;
+    color: #333;
+    text-decoration: none;
+}
+
+.song-control:hover {
+    background-color: #f0f0f0;
+}
+
+.sidebar-title {
+    color: #333;
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+.song-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.song-link {
+    display: block;
+    padding: 10px;
+    color: #333;
+    text-decoration: none;
+}
+
+.song-link:hover {
+    background-color: #f0f0f0;
 }
