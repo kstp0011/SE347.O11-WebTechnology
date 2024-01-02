@@ -4,15 +4,18 @@
         <div
             class="container"
             style="display: flex; justify-content: space-between">
-            <div class="article-metadata" style="flex: 7">
-                <form action="" method="post">
-                    <button type="submit" class="edit-button">
-                        Edit
-                    </button>
+            <div class="article-metadata" style="flex: 7; position: relative;">
+                {% if song.owner == current_user or current_user.is_admin or
+                current_user.is_manager %}
+                <form
+                    action="{{ url_for('songs.edit', song_id=song.id) }}"
+                    method="post">
+                    <button type="submit" class="edit-button">Edit</button>
                 </form>
+                {% endif %}
                 <legend class="mb-1">{{ song.title }}</legend>
                 <p class="text-muted">
-                    By <strong>{{ song.artist }}</strong> <br />
+                    By <a href=""><strong>{{ song.artist }}</strong></a> <br />
                     From <strong>{{ song.album }}</strong>
                 </p>
             </div>

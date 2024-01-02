@@ -1,12 +1,22 @@
-{% extends "layout.html" %} {% block content %} {% if song %}
-<article class="media content-section">
-    <div class="media-body">
-        <div class="article-metadata">
-            <legend class="mb-1">{{ song.title }}</legend>
-            <p class="text-muted">
-                By <strong>{{ song.artist }}</strong> from
-                <strong>{{ song.album }}</strong>
-            </p>
+{% extends "layout.html" %}
+{% block content %}
+  <div class="content-section">
+    <form method="post">
+      {{ form.hidden_tag() }}
+      <fieldset class="form-group">
+        <legend class="border-bottom mb-4">
+          Edit song title, artist or album
+        </legend>
+        <div class="form-group mb-3">
+          {{ form.title.label(class='form-control-label') }}
+          {% if form.title.errors %}
+            {{ form.title(class='form-control form-control-lg is-invalid') }}
+            <div class="invalid-feedback">
+              {% for error in form.title.errors %}<span>{{ error }}</span>{% endfor %}
+            </div>
+          {% else %}
+            {{ form.title(class='text-muted form-control form-control-lg') }}
+          {% endif %}
         </div>
         {% if song.id > 1 %}
             <a href="{{ url_for('songs.song', song_id=song.id - 1) }}">Previous Song</a>

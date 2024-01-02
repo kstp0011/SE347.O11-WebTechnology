@@ -185,6 +185,52 @@ def song(song_id):
     return render_template('song.html', song=song, music=song_file, songs=songs)
 
 
+@songs.route('/song/edit/<int:song_id>', methods=['GET', 'POST'])
+@login_required
+def edit(song_id):
+    form = SongMetadataForm()
+    song = Song.query.get_or_404(song_id)
+    if song.owner != current_user:
+        abort(403)
+    
+
+    if form.validate_on_submit():
+        title = form.title.data if form.title.data else "Unknown Title"
+        artist_name = form.artist.data if form.artist.data else "Unknown Artist"
+        album = form.album.data if form.album.data else "Unknown Album"
+
+
+        artist_info = Artist_info.query.filter_by(name=artist_name).first()
+
+        # If the artist doesn't exist, create a new Artist_info
+        if artist_info is None:
+            artist_info = Artist_info(name=artist_name)
+            db.session.add(artist_info)
+            db.session.commit()
+
+        song.title = title
+        song.artist = artist_name
+        song.artist_id = artist_info.id  # set the artist_id to the id of the artist_info
+        song.album = album
+        db.session.commit()
+
+        song_path = os.path.join(
+            app.root_path, app.config['UPLOAD_FOLDER'], song.filename)
+        audio = eyed3.load(song_path)
+        audio.tag.title = title
+        audio.tag.artist = artist_name
+        audio.tag.album = album
+        audio.tag.save()
+
+        flash(f'Song `{title}` has been uploaded!', 'success')
+        return redirect(url_for('songs.upload'))
+    elif request.method == 'GET':
+        form.title.data = song.title
+        form.artist.data = song.artist
+        form.album.data = song.album
+    return render_template('song_metadata.html', title='Edit song details', form=form)
+
+
 @songs.route('/song/delete/<int:song_id>', methods=['POST'])
 @login_required
 def delete(song_id):
