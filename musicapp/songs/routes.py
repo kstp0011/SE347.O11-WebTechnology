@@ -1,7 +1,7 @@
 import requests
 from flask import request, jsonify
 import os
-from flask import render_template, url_for, flash, redirect, request, send_file, abort, Blueprint, current_app as app
+from flask import render_template, url_for, flash, redirect, request, send_file, abort, Blueprint, request, current_app as app
 from flask_login import current_user, login_required
 from sqlalchemy import or_
 from sqlalchemy.exc import SQLAlchemyError
@@ -11,6 +11,8 @@ from musicapp.models import Song, Artist_info, User
 from musicapp import db
 from musicapp.songs.forms import SongForm, SearchForm, SongMetadataForm
 from musicapp.songs.utils import save_song, search_music
+
+import requests
 
 songs = Blueprint('songs', __name__)
 
@@ -249,8 +251,31 @@ def search():
     return render_template('search.html', form=form)
 
 
-@songs.route('/api/search', methods=['POST'])
-def search_music_route():
-    search_query = request.json.get('query', '')
-    results = search_music(search_query)
-    return jsonify(results)
+# @songs.route('/api/search', methods=['POST'])
+# def search_music_route():
+#     search_query = request.json.get('query', '')
+#     results = search_music(search_query)
+#     return jsonify(results)
+
+
+@app.route('/api/recognize', methods=['POST'])
+def recognize_music():
+    audio_url = request.json.get('url')
+    if not audio_url:
+        return 'No URL provided', 400
+
+    response = requests.get(audio_url)
+    if response.status_code != 200:
+        return 'Failed to download file', 400
+
+    data = {
+        'return': 'apple_music,spotify',
+        'api_token': 'test'  # Replace 'test' with your actual API token
+    }
+    files = {
+        'file': ('audio.mp3', response.content)
+    }
+
+    response = requests.post('https://api.audd.io/', data=data, files=files)
+
+    return response.json()

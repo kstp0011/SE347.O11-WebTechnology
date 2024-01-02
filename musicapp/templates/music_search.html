@@ -1,4 +1,21 @@
 {% extends "layout.html" %} {% block content %} {% if song %}
+<style>
+    #recognizeButton {
+        font-size: 1.2em;
+        padding: 10px 20px;
+        color: white;
+        background-color: #007bff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    #result {
+        font-size: 1.2em;
+        color: #333;
+    }
+</style>
+
 <article class="media content-section">
     <div class="media-body">
         <div class="article-metadata">
@@ -36,6 +53,11 @@
         </div>
     </div>
 </article>
+<!-- Button to recognize the song -->
+<button id="recognizeButton" class="btn btn-primary">What is this song?</button>
+
+<!-- Div to display the result -->
+<div id="result" class="mt-3"></div>
 <!-- Modal -->
 <div
     class="modal fade"
@@ -77,4 +99,35 @@
 {% else %}
 <h2>Song does not exist!</h2>
 <p class="text-muted">Try to play other songs.</p>
-{% endif %} {% endblock content %}
+{% endif %}
+<!-- script for serach form -->
+<!-- Script to handle the button click event -->
+<!-- Script to handle the button click event -->
+<script>
+    document.getElementById('recognizeButton').addEventListener('click', function() {
+        var audioElement = document.querySelector('audio');
+        var audioSrc = audioElement.querySelector('source').src;
+
+        fetch('/api/recognize', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                url: audioSrc
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            var resultDiv = document.getElementById('result');
+            if (data.result) {
+                resultDiv.innerHTML = '<strong>Song:</strong> ' + data.result.title +
+                    '<br><strong>Artist:</strong> ' + data.result.artist +
+                    '<br><strong>Album:</strong> ' + data.result.album;
+            } else {
+                resultDiv.textContent = 'No result found.';
+            }
+        });
+    });
+</script>
+{% endblock content %}
