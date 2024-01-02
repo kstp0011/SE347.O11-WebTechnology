@@ -1,0 +1,42 @@
+.article-metadata {
+    background-color: #f8f9fa; /* Light gray background */
+    border-radius: 8px; /* Rounded corners */
+    padding: 20px; /* Padding inside the div */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    font-family: "Arial", sans-serif; /* Font family */
+    max-width: 600px; /* Maximum width of the div */
+    /* margin: auto; Center the div */
+}
+
+.article-metadata legend {
+    color: #007bff; /* Blue color for the title */
+    font-size: 1.5em; /* Larger font size for the title */
+    font-weight: bold; /* Bold font weight for the title */
+    margin-bottom: 10px; /* Margin at the bottom of the title */
+}
+
+.article-metadata p {
+    color: #6c757d; /* Muted text color */
+    line-height: 1.5; /* Spacing between lines */
+}
+
+.article-metadata strong {
+    color: #343a40; /* Darker color for emphasis */
+}
+
+.edit-button {
+    position: absolute;
+    top: 16%;  
+    right: 42%; 
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.edit-button:hover {
+    background-color: darkred;
+}
