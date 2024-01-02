@@ -4,7 +4,7 @@
         <div
             class="container"
             style="display: flex; justify-content: space-between">
-            <div class="article-metadata" style="flex: 7">
+            <div class="article-metadata" style="flex: 7; position: relative;">
                 {% if song.owner == current_user or current_user.is_admin or
                 current_user.is_manager %}
                 <form
