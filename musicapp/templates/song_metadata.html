@@ -1,42 +1,32 @@
-{% extends "layout.html" %}
-{% block content %}
-  <div class="content-section">
-    <form method="post">
-      {{ form.hidden_tag() }}
-      <fieldset class="form-group">
-        <legend class="border-bottom mb-4">
-          Edit song title, artist or album
-        </legend>
-        <div class="form-group mb-3">
-          {{ form.title.label(class='form-control-label') }}
-          {% if form.title.errors %}
-            {{ form.title(class='form-control form-control-lg is-invalid') }}
-            <div class="invalid-feedback">
-              {% for error in form.title.errors %}<span>{{ error }}</span>{% endfor %}
-            </div>
-          {% else %}
-            {{ form.title(class='text-muted form-control form-control-lg') }}
-          {% endif %}
-        </div>
-        {% if song.id > 1 %}
-            <a href="{{ url_for('songs.song', song_id=song.id - 1) }}">Previous Song</a>
-        {% endif %}
-        {% if songs[-1].id != song.id %}
-            <a href="{{ url_for('songs.song', song_id=song.id + 1) }}">Next Song</a>
-        {% endif %}
-        <audio
-            id="audioPlayer"
-            controls
-            autoplay
-            controlslist="nodownload"
-            class="w-100 mt-2 mb-2">
-            <source src="{{ music }}" type="audio/mp3" />
-            <source src="{{ music }}" type="audio/mpeg" />
-            <source src="{{ music }}" type="audio/wav" />
-            Your browser does not support the audio tag.
-        </audio>
+{% extends "layout.html" %} {% block content %} {% if song %}
+<article class="media content-section">
+  <div class="media-body">
+    <div class="article-metadata">
+      <legend class="mb-1">{{ song.title }}</legend>
+      <p class="text-muted">
+        By <strong>{{ song.artist }}</strong> from
+        <strong>{{ song.album }}</strong>
+      </p>
+    </div>
+    {% if song.id > 1 %}
+    <a href="{{ url_for('songs.song', song_id=song.id - 1) }}">Previous Song</a>
+    {% endif %}
+    {% if songs[-1].id != song.id %}
+    <a href="{{ url_for('songs.song', song_id=song.id + 1) }}">Next Song</a>
+    {% endif %}
+    <audio
+      id="audioPlayer"
+      controls
+      autoplay
+      controlslist="nodownload"
+      class="w-100 mt-2 mb-2">
+      <source src="{{ music }}" type="audio/mp3" />
+      <source src="{{ music }}" type="audio/mpeg" />
+      <source src="{{ music }}" type="audio/wav" />
+      Your browser does not support the audio tag.
+    </audio>
 
-        <script>
+    <script>
             document.getElementById('audioPlayer').addEventListener('ended', function() {
                 // Assuming song.id is available in the template context
                 var nextSongId = {{ song.id }} + 1;
@@ -45,68 +35,68 @@
                 window.location.href = nextSongUrl;
             }, false);
         </script>
-        <div class="btns">
-            <a
-                class="btn btn-outline-info"
-                href="{{ url_for('songs.download', song_id = song.id) }}">Download</a>
-            {% if song.owner == current_user or current_user.is_admin or
-            current_user.is_manager %}
-            <button
-                type="button"
-                class="btn btn-outline-danger m-2"
-                data-bs-toggle="modal"
-                data-bs-target="#deleteModalCenter">
-                Delete
-            </button>
-            {% endif %}
-        </div>
+    <div class="btns">
+      <a
+        class="btn btn-outline-info"
+        href="{{ url_for('songs.download', song_id = song.id) }}">Download</a>
+      {% if song.owner == current_user or current_user.is_admin or
+      current_user.is_manager %}
+      <button
+        type="button"
+        class="btn btn-outline-danger m-2"
+        data-bs-toggle="modal"
+        data-bs-target="#deleteModalCenter">
+        Delete
+      </button>
+      {% endif %}
     </div>
-    <div class="sidebar">
-        <h2>Next Songs</h2>
-        <ul>
-            {% for next_song in songs %}
-                <li>{{ next_song.title }}</li>
-            {% endfor %}
-        </ul>
-    </div>
+  </div>
+  <div class="sidebar">
+    <h2>Next Songs</h2>
+    <ul>
+      {% for next_song in songs %}
+      <li>{{ next_song.title }}</li>
+      {% endfor %}
+    </ul>
+  </div>
 </article>
 <!-- Modal -->
 <div
-    class="modal fade"
-    id="deleteModalCenter"
-    tabindex="-1"
-    aria-labelledby="deleteModalCenterTitle"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLongTitle">
-                    Delete Song?
-                </h5>
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"></button>
-            </div>
-            <div class="modal-footer">
-                <button
-                    type="button"
-                    class="btn btn-secondary"
-                    data-bs-dismiss="modal">
-                    Close
-                </button>
-                <form
-                    action="{{ url_for('songs.delete', song_id=song.id) }}"
-                    method="post">
-                    <input
-                        type="submit"
-                        class="btn btn-danger"
-                        value="Delete" />
-                </form>
-            </div>
-        </div>
+  class="modal fade"
+  id="deleteModalCenter"
+  tabindex="-1"
+  aria-labelledby="deleteModalCenterTitle"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLongTitle">
+          Delete Song?
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"></button>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal">
+          Close
+        </button>
+        <form
+          action="{{ url_for('songs.delete', song_id=song.id) }}"
+          method="post">
+          <input
+            type="submit"
+            class="btn btn-danger"
+            value="Delete" />
+        </form>
+      </div>
     </div>
+  </div>
 </div>
 {% else %}
 <h2>Song does not exist!</h2>
