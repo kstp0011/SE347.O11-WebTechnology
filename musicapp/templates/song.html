@@ -6,13 +6,11 @@
             style="display: flex; justify-content: space-between">
             <div class="article-metadata" style="flex: 7">
                 <form action="" method="post">
-                    <button type="submit" class="edit-button">
-                        Edit
-                    </button>
+                    <button type="submit" class="edit-button">Edit</button>
                 </form>
                 <legend class="mb-1">{{ song.title }}</legend>
                 <p class="text-muted">
-                    By <strong>{{ song.artist }}</strong> <br />
+                    By <a href=""><strong>{{ song.artist }}</strong></a> <br />
                     From <strong>{{ song.album }}</strong>
                 </p>
             </div>
