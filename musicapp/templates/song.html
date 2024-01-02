@@ -45,6 +45,14 @@
             {% endif %}
         </div>
     </div>
+    <div class="sidebar">
+        <h2>Next Songs</h2>
+        <ul>
+            {% for next_song in songs %}
+                <li>{{ next_song.title }}</li>
+            {% endfor %}
+        </ul>
+    </div>
 </article>
 <!-- Modal -->
 <div

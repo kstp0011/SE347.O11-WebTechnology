@@ -181,7 +181,8 @@ def song_metadata(id):
 def song(song_id):
     song = Song.query.get_or_404(song_id)
     song_file = url_for('static', filename='uploads/' + song.filename)
-    return render_template('song.html', song=song, music=song_file)
+    songs = Song.query.order_by(Song.id).all()
+    return render_template('song.html', song=song, music=song_file, songs=songs)
 
 
 @songs.route('/song/delete/<int:song_id>', methods=['POST'])
