@@ -2,6 +2,7 @@ import os
 import secrets
 from werkzeug.utils import secure_filename
 from flask import current_app as app
+import requests
 
 
 def save_song(file):
@@ -13,3 +14,14 @@ def save_song(file):
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     file.save(file_path)
     return filename
+
+def search_music(query):
+    data = {
+        'url': query,
+        'return': 'apple_music,spotify',
+        'api_token': 'test'  # Replace 'test' with your actual API token
+    }
+
+    result = requests.post('https://api.audd.io/', data=data)
+
+    return result.json()

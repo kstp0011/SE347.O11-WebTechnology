@@ -1,3 +1,5 @@
+import requests
+from flask import request, jsonify
 import os
 from flask import render_template, url_for, flash, redirect, request, send_file, abort, Blueprint, current_app as app
 from flask_login import current_user, login_required
@@ -8,7 +10,7 @@ import eyed3
 from musicapp.models import Song, Artist_info, User
 from musicapp import db
 from musicapp.songs.forms import SongForm, SearchForm, SongMetadataForm
-from musicapp.songs.utils import save_song
+from musicapp.songs.utils import save_song, search_music
 
 songs = Blueprint('songs', __name__)
 
@@ -245,3 +247,10 @@ def search():
         return render_template('search_results.html', search_input_text=search_input_text, form=form)
 
     return render_template('search.html', form=form)
+
+
+@songs.route('/api/search', methods=['POST'])
+def search_music_route():
+    search_query = request.json.get('query', '')
+    results = search_music(search_query)
+    return jsonify(results)
