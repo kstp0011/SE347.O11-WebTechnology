@@ -55,17 +55,21 @@
                 window.location.href = nextSongUrl;
             }, false);
         </script>
-            <div class="btns"> 
-                {% if prev_song %}
-                    <a class="btn btn-outline-info" align="left"
-                        href="{{ url_for('songs.song', song_id=prev_song.id) }}">Previous
-                        Song</a>
-                {% endif %}
-                {% if next_song %}
-                    <a class="btn btn-outline-info" align="right"
-                        href="{{ url_for('songs.song', song_id=next_song.id) }}">Next
-                        Song</a>
-                {% endif %}
+            <div class="song-controls"> 
+                <div class="prev-song">
+                    {% if prev_song %}
+                        <a class="btn btn-outline-info song-control" href="{{ url_for('songs.song', song_id=prev_song.id) }}">
+                            <i class="fas fa-chevron-left"></i> Previous Song
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="next-song">
+                    {% if next_song %}
+                        <a class="btn btn-outline-info song-control" href="{{ url_for('songs.song', song_id=next_song.id) }}">
+                            Next Song <i class="fas fa-chevron-right"></i>
+                        </a>
+                    {% endif %}
+                </div>
             </div>
             <div class="btns">
                 <a

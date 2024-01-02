@@ -161,3 +161,19 @@ a.article-title:hover {
 .song-link:hover {
     background-color: #f0f0f0;
 }
+
+/* prev/next button */
+.song-controls {
+    display: flex;
+    justify-content: space-between;
+}
+
+.prev-song {
+    flex-grow: 1;
+    text-align: left;
+}
+
+.next-song {
+    flex-grow: 1;
+    text-align: right;
+}
