@@ -57,16 +57,17 @@
             }, false);
         </script>
         {% if song.id > 1 %}
-        <div class="btns">
-            <a class="btn btn-outline-info" align="left"
-                href="{{ url_for('songs.song', song_id=song.id - 1) }}">Previous
-                Song</a>
-            {% endif %}
-            {% if songs[-1].id != song.id %}
-            <a class="btn btn-outline-info" align="right"
-                href="{{ url_for('songs.song', song_id=song.id + 1) }}">Next
-                Song</a>
-            {% endif %}
+            <div class="btns"> 
+                <a class="btn btn-outline-info" align="left"
+                    href="{{ url_for('songs.song', song_id=song.id - 1) }}">Previous
+                    Song</a>
+                {% endif %}
+                {% if songs[-1].id != song.id %}
+                <a class="btn btn-outline-info" align="right"
+                    href="{{ url_for('songs.song', song_id=song.id + 1) }}">Next
+                    Song</a>
+                {% endif %}
+            </div>
             <div class="btns">
                 <a
                     class="btn btn-outline-info"
