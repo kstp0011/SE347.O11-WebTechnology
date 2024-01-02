@@ -8,6 +8,12 @@
                 <strong>{{ song.album }}</strong>
             </p>
         </div>
+        {% if song.id > 1 %}
+            <a href="{{ url_for('songs.song', song_id=song.id - 1) }}">Previous Song</a>
+        {% endif %}
+        {% if songs[-1].id != song.id %}
+            <a href="{{ url_for('songs.song', song_id=song.id + 1) }}">Next Song</a>
+        {% endif %}
         <audio
             id="audioPlayer"
             controls
