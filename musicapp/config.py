@@ -14,4 +14,5 @@ class Config:
     MAIL_USE_TLS = True
     MAIL_USERNAME = MAIL_USERNAME
     MAIL_PASSWORD = MAIL_PASSWORD
+    AUDD_API_TOKEN = '4975ba04425b8788ff0ba2cce9e1f31e'
     # BASE_URL = ngrok.connect(5000).public_url

@@ -1,41 +1,30 @@
 {% extends "layout.html" %} {% block content %} {% if song %}
+<style>
+    #recognizeButton {
+        font-size: 1.2em;
+        padding: 10px 20px;
+        color: white;
+        background-color: #007bff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    #result {
+        font-size: 1.2em;
+        color: #333;
+    }
+</style>
+
 <article class="media content-section">
     <div class="media-body">
-        <div
-            class="container"
-            style="display: flex; justify-content: space-between">
-            <div class="article-metadata" style="flex: 7; position: relative;">
-                {% if song.owner == current_user or current_user.is_admin or
-                current_user.is_manager %}
-                <form
-                    action="{{ url_for('songs.edit', song_id=song.id) }}"
-                    method="post">
-                    <button type="submit" class="edit-button">Edit</button>
-                </form>
-                {% endif %}
-                <legend class="mb-1">{{ song.title }}</legend>
-                <p class="text-muted">
-                    By <a href=""><strong>{{ song.artist }}</strong></a> <br />
-                    From <strong>{{ song.album }}</strong>
-                </p>
-            </div>
-
-            <div
-                class="container"
-                style="
-                    flex: 3;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    margin: 5px;
-                ">
-                <img
-                    src="{{ url_for('static', filename='Images/MusicLib_Logo.PNG') }}"
-                    class="img-fluid"
-                    style="border-radius: 10px" />
-            </div>
+        <div class="article-metadata">
+            <legend class="mb-1">{{ song.title }}</legend>
+            <p class="text-muted">
+                By <strong>{{ song.artist }}</strong> from
+                <strong>{{ song.album }}</strong>
+            </p>
         </div>
-
         <audio
             controls
             autoplay
@@ -50,9 +39,7 @@
         <div class="btns">
             <a
                 class="btn btn-outline-info"
-                href="{{ url_for('songs.download', song_id = song.id) }}"
-                >Download</a
-            >
+                href="{{ url_for('songs.download', song_id = song.id) }}">Download</a>
             {% if song.owner == current_user or current_user.is_admin or
             current_user.is_manager %}
             <button
@@ -66,6 +53,11 @@
         </div>
     </div>
 </article>
+<!-- Button to recognize the song -->
+<button id="recognizeButton" class="btn btn-primary">What is this song?</button>
+
+<!-- Div to display the result -->
+<div id="result" class="mt-3"></div>
 <!-- Modal -->
 <div
     class="modal fade"
@@ -107,4 +99,37 @@
 {% else %}
 <h2>Song does not exist!</h2>
 <p class="text-muted">Try to play other songs.</p>
-{% endif %} {% endblock content %}
+{% endif %}
+<!-- script for serach form -->
+<!-- Script to handle the button click event -->
+<!-- Script to handle the button click event -->
+<script>
+    document.getElementById('recognizeButton').addEventListener('click', function() {
+        var audioElement = document.querySelector('audio');
+        var audioSrc = audioElement.querySelector('source').src;
+
+        fetch(audioSrc)
+        .then(response => response.blob())
+        .then(blob => {
+            var formData = new FormData();
+            formData.append('file', blob, 'audio.mp3');
+
+            fetch('/api/recognize', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                var resultDiv = document.getElementById('result');
+                if (data.result) {
+                    resultDiv.innerHTML = '<strong>Song:</strong> ' + data.result.title +
+                        '<br><strong>Artist:</strong> ' + data.result.artist +
+                        '<br><strong>Album:</strong> ' + data.result.album;
+                } else {
+                    resultDiv.textContent = 'No result found.';
+                }
+            });
+        });
+    });
+</script>
+{% endblock content %}

@@ -1,5 +1,7 @@
+import requests
+from flask import request, jsonify
 import os
-from flask import render_template, url_for, flash, redirect, request, send_file, abort, Blueprint, current_app as app
+from flask import render_template, url_for, flash, redirect, request, send_file, abort, Blueprint, request, current_app as app
 from flask_login import current_user, login_required
 from sqlalchemy import or_
 from sqlalchemy.exc import SQLAlchemyError
@@ -8,7 +10,9 @@ import eyed3
 from musicapp.models import Song, Artist_info, User
 from musicapp import db
 from musicapp.songs.forms import SongForm, SearchForm, SongMetadataForm
-from musicapp.songs.utils import save_song
+from musicapp.songs.utils import save_song, search_music
+
+import requests
 
 songs = Blueprint('songs', __name__)
 
@@ -177,7 +181,8 @@ def song_metadata(id):
 def song(song_id):
     song = Song.query.get_or_404(song_id)
     song_file = url_for('static', filename='uploads/' + song.filename)
-    return render_template('song.html', song=song, music=song_file)
+    songs = Song.query.order_by(Song.id).all()
+    return render_template('song.html', song=song, music=song_file, songs=songs)
 
 
 @songs.route('/song/edit/<int:song_id>', methods=['GET', 'POST'])
@@ -291,3 +296,10 @@ def search():
         return render_template('search_results.html', search_input_text=search_input_text, form=form)
 
     return render_template('search.html', form=form)
+
+
+@songs.route('/api/search', methods=['POST'])
+def search_music_route():
+    search_query = request.json.get('query', '')
+    results = search_music(search_query)
+    return jsonify(results)
