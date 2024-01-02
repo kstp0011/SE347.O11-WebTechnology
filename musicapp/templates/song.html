@@ -9,9 +9,9 @@
             </p>
         </div>
         <audio
+            id="audioPlayer"
             controls
             autoplay
-            loop
             controlslist="nodownload"
             class="w-100 mt-2 mb-2">
             <source src="{{ music }}" type="audio/mp3" />
@@ -19,6 +19,16 @@
             <source src="{{ music }}" type="audio/wav" />
             Your browser does not support the audio tag.
         </audio>
+
+        <script>
+            document.getElementById('audioPlayer').addEventListener('ended', function() {
+                // Assuming song.id is available in the template context
+                var nextSongId = {{ song.id }} + 1;
+                var baseUrl = "{{ url_for('songs.song', song_id=1) }}";
+                var nextSongUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/') + 1) + nextSongId;
+                window.location.href = nextSongUrl;
+            }, false);
+        </script>
         <div class="btns">
             <a
                 class="btn btn-outline-info"

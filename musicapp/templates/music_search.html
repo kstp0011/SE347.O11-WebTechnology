@@ -108,25 +108,27 @@
         var audioElement = document.querySelector('audio');
         var audioSrc = audioElement.querySelector('source').src;
 
-        fetch('/api/recognize', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                url: audioSrc
+        fetch(audioSrc)
+        .then(response => response.blob())
+        .then(blob => {
+            var formData = new FormData();
+            formData.append('file', blob, 'audio.mp3');
+
+            fetch('/api/recognize', {
+                method: 'POST',
+                body: formData
             })
-        })
-        .then(response => response.json())
-        .then(data => {
-            var resultDiv = document.getElementById('result');
-            if (data.result) {
-                resultDiv.innerHTML = '<strong>Song:</strong> ' + data.result.title +
-                    '<br><strong>Artist:</strong> ' + data.result.artist +
-                    '<br><strong>Album:</strong> ' + data.result.album;
-            } else {
-                resultDiv.textContent = 'No result found.';
-            }
+            .then(response => response.json())
+            .then(data => {
+                var resultDiv = document.getElementById('result');
+                if (data.result) {
+                    resultDiv.innerHTML = '<strong>Song:</strong> ' + data.result.title +
+                        '<br><strong>Artist:</strong> ' + data.result.artist +
+                        '<br><strong>Album:</strong> ' + data.result.album;
+                } else {
+                    resultDiv.textContent = 'No result found.';
+                }
+            });
         });
     });
 </script>

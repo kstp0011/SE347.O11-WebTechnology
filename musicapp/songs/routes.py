@@ -251,31 +251,8 @@ def search():
     return render_template('search.html', form=form)
 
 
-# @songs.route('/api/search', methods=['POST'])
-# def search_music_route():
-#     search_query = request.json.get('query', '')
-#     results = search_music(search_query)
-#     return jsonify(results)
-
-
-@app.route('/api/recognize', methods=['POST'])
-def recognize_music():
-    audio_url = request.json.get('url')
-    if not audio_url:
-        return 'No URL provided', 400
-
-    response = requests.get(audio_url)
-    if response.status_code != 200:
-        return 'Failed to download file', 400
-
-    data = {
-        'return': 'apple_music,spotify',
-        'api_token': 'test'  # Replace 'test' with your actual API token
-    }
-    files = {
-        'file': ('audio.mp3', response.content)
-    }
-
-    response = requests.post('https://api.audd.io/', data=data, files=files)
-
-    return response.json()
+@songs.route('/api/search', methods=['POST'])
+def search_music_route():
+    search_query = request.json.get('query', '')
+    results = search_music(search_query)
+    return jsonify(results)
