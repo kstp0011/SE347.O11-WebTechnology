@@ -45,7 +45,7 @@ class Song(db.Model):
     artist_id = db.Column(db.Integer, db.ForeignKey('artist_info.id'))
     date_uploaded = db.Column(db.DateTime, nullable=False,
                               default=db.func.current_timestamp())
-
+    likes = db.relationship('Like', backref='song', lazy='dynamic')
     artist_info = db.relationship(
         'Artist_info', backref=db.backref('songs', lazy=True))
 
@@ -54,7 +54,7 @@ class Song(db.Model):
     # cover = db.Column(db.String(150))
 
     def __repr__(self) -> str:
-        return f"Song('{self.title}', '{self.artist}', '{self.album}', '{self.filename}', '{self.owner_id}', '{self.artist_id}')"
+        return f"Song('{self.title}', '{self.artist}', '{self.album}', '{self.filename}', '{self.owner_id}', '{self.artist_id}', '{self.date_uploaded}, '{self.likes}')"
 
 
 class Artist_info(db.Model):
@@ -69,17 +69,19 @@ class Artist_info(db.Model):
 
 
 class Like(db.Model):
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    song_id = db.Column(db.Integer, db.ForeignKey('song.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    song_id = db.Column(db.Integer, db.ForeignKey('song.id'), primary_key=True)
 
 
 class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(140))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     song_id = db.Column(db.Integer, db.ForeignKey('song.id'))
 
 
 class Reply(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(140))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     comment_id = db.Column(db.Integer, db.ForeignKey('comment.id'))

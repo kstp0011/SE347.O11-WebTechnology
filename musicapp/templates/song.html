@@ -134,6 +134,42 @@
             </div>
         </div>
     </div>
+    <!-- likes -->
+    <div class="likes">
+        <h2>Likes: {{ song.likes.count() }}</h2>
+        <form action="{{ url_for('songs.like', song_id=song.id) }}" method="post">
+            <button type="submit" class="btn btn-primary">Like</button>
+        </form>
+    </div>
+
+    <!-- comments -->
+    <div class="comments">
+        <h2>Comments</h2>
+        {% for comment in song.comments %}
+            <div class="comment">
+                <p>{{ comment.text }}</p>
+                <p>Posted by {{ comment.user.username }}</p>
+    
+                <!-- Replies -->
+                <div class="replies">
+                    {% for reply in comment.replies %}
+                        <div class="reply">
+                            <p>{{ reply.text }}</p>
+                            <p>Posted by {{ reply.user.username }}</p>
+                        </div>
+                    {% endfor %}
+                    <form action="{{ url_for('songs.reply', comment_id=comment.id) }}" method="post">
+                        <textarea name="text" required></textarea>
+                        <button type="submit" class="btn btn-primary">Reply</button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+        <form action="{{ url_for('songs.comment', song_id=song.id) }}" method="post">
+            <textarea name="text" required></textarea>
+            <button type="submit" class="btn btn-primary">Comment</button>
+        </form>
+    </div>
     {% else %}
     <h2>Song does not exist!</h2>
     <p class="text-muted">Try to play other songs.</p>

@@ -176,7 +176,18 @@ def song_metadata(id):
     return render_template('song_metadata.html', title='Edit song details', form=form)
 
 
-@songs.route('/song/play/<int:song_id>')
+# @songs.route('/song/play/<int:song_id>')
+# @login_required
+# def song(song_id):
+#     song = Song.query.get_or_404(song_id)
+#     song_file = url_for('static', filename='uploads/' + song.filename)
+#     songs = Song.query.order_by(Song.id).all()
+#     next_song = Song.query.filter(Song.id > song_id).first()
+#     prev_song = Song.query.filter(
+#         Song.id < song_id).order_by(Song.id.desc()).first()
+#     return render_template('song.html', song=song, music=song_file, songs=songs, next_song=next_song, prev_song=prev_song)
+
+@songs.route('/song/play/<int:song_id>', methods=['GET', 'POST'])
 @login_required
 def song(song_id):
     song = Song.query.get_or_404(song_id)
@@ -185,7 +196,20 @@ def song(song_id):
     next_song = Song.query.filter(Song.id > song_id).first()
     prev_song = Song.query.filter(
         Song.id < song_id).order_by(Song.id.desc()).first()
-    return render_template('song.html', song=song, music=song_file, songs=songs, next_song=next_song, prev_song=prev_song)
+
+    # Query for likes, comments, and replies
+    likes = Like.query.filter_by(song_id=song_id).all()
+    comments = Comment.query.filter_by(song_id=song_id).all()
+    replies = Reply.query.join(Comment, (Reply.comment_id == Comment.id)).filter(
+        Comment.song_id == song_id).all()
+
+    # Create forms for likes, comments, and replies
+    comment_form = CommentForm()
+    reply_form = ReplyForm()
+
+    return render_template('song.html', song=song, music=song_file, songs=songs, next_song=next_song, prev_song=prev_song,
+                           likes=likes, comments=comments, replies=replies,
+                           comment_form=comment_form, reply_form=reply_form)
 
 
 @songs.route('/song/edit/<int:song_id>', methods=['GET', 'POST'])
@@ -309,45 +333,40 @@ def search_music_route():
 @songs.route('/like/<int:song_id>', methods=['POST'])
 @login_required
 def like(song_id):
+    # code to handle liking a song
     song = Song.query.get_or_404(song_id)
     like = Like.query.filter_by(
         user_id=current_user.id, song_id=song_id).first()
-
     if like:
-        # If a like already exists, unlike the song
         db.session.delete(like)
-        flash('You have unliked this song.', 'success')
+        db.session.commit()
+        return jsonify({'liked': False})
     else:
-        # If no like exists, like the song
         like = Like(user_id=current_user.id, song_id=song_id)
         db.session.add(like)
-        flash('You have liked this song.', 'success')
-
-    db.session.commit()
-    return redirect(url_for('songs.display', song_id=song_id))
+        db.session.commit()
+        return jsonify({'liked': True})
 
 
 @songs.route('/comment/<int:song_id>', methods=['POST'])
 @login_required
 def comment(song_id):
-    form = CommentForm()
-    if form.validate_on_submit():
-        comment = Comment(text=form.text.data,
-                          user_id=current_user.id, song_id=song_id)
-        db.session.add(comment)
-        db.session.commit()
-        flash('Your comment has been posted.', 'success')
-    return redirect(url_for('songs.display', song_id=song_id))
+    # code to handle commenting on a song
+    song = Song.query.get_or_404(song_id)
+    comment = Comment(
+        text=request.form['comment'], user_id=current_user.id, song_id=song_id)
+    db.session.add(comment)
+    db.session.commit()
+    return redirect(url_for('songs.song', song_id=song_id))
 
 
 @songs.route('/reply/<int:comment_id>', methods=['POST'])
 @login_required
 def reply(comment_id):
-    form = ReplyForm()
-    if form.validate_on_submit():
-        reply = Reply(text=form.text.data,
-                      user_id=current_user.id, comment_id=comment_id)
-        db.session.add(reply)
-        db.session.commit()
-        flash('Your reply has been posted.', 'success')
-    return redirect(url_for('comments.display', comment_id=comment_id))
+    # code to handle replying to a comment
+    comment = Comment.query.get_or_404(comment_id)
+    reply = Reply(text=request.form['reply'],
+                  user_id=current_user.id, comment_id=comment_id)
+    db.session.add(reply)
+    db.session.commit()
+    return redirect(url_for('songs.song', song_id=comment.song_id))
