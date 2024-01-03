@@ -64,3 +64,22 @@ class Artist_info(db.Model):
 
     def __repr__(self) -> str:
         return f"Artist_info('{self.name}', '{self.image}')"
+
+# interactions
+
+
+class Like(db.Model):
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    song_id = db.Column(db.Integer, db.ForeignKey('song.id'))
+
+
+class Comment(db.Model):
+    text = db.Column(db.String(140))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    song_id = db.Column(db.Integer, db.ForeignKey('song.id'))
+
+
+class Reply(db.Model):
+    text = db.Column(db.String(140))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    comment_id = db.Column(db.Integer, db.ForeignKey('comment.id'))

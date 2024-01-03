@@ -7,9 +7,9 @@ from sqlalchemy import or_
 from sqlalchemy.exc import SQLAlchemyError
 import eyed3
 
-from musicapp.models import Song, Artist_info, User
+from musicapp.models import Song, Artist_info, User, Like, Comment, Reply
 from musicapp import db
-from musicapp.songs.forms import SongForm, SearchForm, SongMetadataForm
+from musicapp.songs.forms import SongForm, SearchForm, SongMetadataForm, CommentForm, ReplyForm
 from musicapp.songs.utils import save_song, search_music
 
 import requests
@@ -304,3 +304,50 @@ def search_music_route():
     search_query = request.json.get('query', '')
     results = search_music(search_query)
     return jsonify(results)
+
+
+@songs.route('/like/<int:song_id>', methods=['POST'])
+@login_required
+def like(song_id):
+    song = Song.query.get_or_404(song_id)
+    like = Like.query.filter_by(
+        user_id=current_user.id, song_id=song_id).first()
+
+    if like:
+        # If a like already exists, unlike the song
+        db.session.delete(like)
+        flash('You have unliked this song.', 'success')
+    else:
+        # If no like exists, like the song
+        like = Like(user_id=current_user.id, song_id=song_id)
+        db.session.add(like)
+        flash('You have liked this song.', 'success')
+
+    db.session.commit()
+    return redirect(url_for('songs.display', song_id=song_id))
+
+
+@songs.route('/comment/<int:song_id>', methods=['POST'])
+@login_required
+def comment(song_id):
+    form = CommentForm()
+    if form.validate_on_submit():
+        comment = Comment(text=form.text.data,
+                          user_id=current_user.id, song_id=song_id)
+        db.session.add(comment)
+        db.session.commit()
+        flash('Your comment has been posted.', 'success')
+    return redirect(url_for('songs.display', song_id=song_id))
+
+
+@songs.route('/reply/<int:comment_id>', methods=['POST'])
+@login_required
+def reply(comment_id):
+    form = ReplyForm()
+    if form.validate_on_submit():
+        reply = Reply(text=form.text.data,
+                      user_id=current_user.id, comment_id=comment_id)
+        db.session.add(reply)
+        db.session.commit()
+        flash('Your reply has been posted.', 'success')
+    return redirect(url_for('comments.display', comment_id=comment_id))

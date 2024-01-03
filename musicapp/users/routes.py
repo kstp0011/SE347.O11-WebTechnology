@@ -103,31 +103,31 @@ def reset_password(token):
 @users.route('/admin')
 @login_required
 def admin():
-    if not(current_user.is_admin):
+    if not (current_user.is_admin):
         flash('You are not an admin!', 'danger')
         return redirect(url_for('main.home'))
-    
+
     users = User.query.all()
     return render_template('admin/admin.html', title='Admin', users=users)
 
 
-@users.route('/admin/confirm_delete/<int:user_id>/<string:username>' , methods=['POST'])
+@users.route('/admin/confirm_delete/<int:user_id>/<string:username>', methods=['POST'])
 @login_required
 def confirm_delete(user_id, username):
-    if not(current_user.is_admin):
+    if not (current_user.is_admin):
         flash('You are not an admin!', 'danger')
         return redirect(url_for('main.home'))
-    
+
     return render_template('admin/confirm_delete.html', title='Confirm Delete', user_id=user_id, username=username)
 
 
 @users.route('/admin/delete/<int:user_id>', methods=['POST'])
 @login_required
 def delete(user_id):
-    if not(current_user.is_admin):
+    if not (current_user.is_admin):
         flash('You are not an admin!', 'danger')
         return redirect(url_for('main.home'))
-    
+
     user = User.query.get_or_404(user_id)
     # only admin can delete user
     if user.is_admin or user.is_manager:
@@ -147,10 +147,10 @@ def delete(user_id):
 @users.route('/admin/grant_manager/<int:user_id>', methods=['POST'])
 @login_required
 def grant_manager(user_id):
-    if not(current_user.is_admin):
+    if not (current_user.is_admin):
         flash('You are not an admin!', 'danger')
         return redirect(url_for('main.home'))
-    
+
     user = User.query.get_or_404(user_id)
 
     user.is_manager = True
@@ -163,10 +163,10 @@ def grant_manager(user_id):
 @users.route('/admin/revoke_manager/<int:user_id>', methods=['POST'])
 @login_required
 def revoke_manager(user_id):
-    if not(current_user.is_admin):
+    if not (current_user.is_admin):
         flash('You are not an admin!', 'danger')
         return redirect(url_for('main.home'))
-    
+
     user = User.query.get_or_404(user_id)
     if user.is_admin:
         flash('You cannot revoke admin!', 'danger')

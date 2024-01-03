@@ -34,3 +34,13 @@ class SearchForm(FlaskForm):
     search_input_text = StringField(
         'What you want to listend to..?', validators=[DataRequired()])
     submit = SubmitField('Search')
+
+
+class CommentForm(FlaskForm):
+    comment = StringField('Comment', validators=[DataRequired()])
+    submit = SubmitField('Comment')
+
+
+class ReplyForm(FlaskForm):
+    reply = StringField('Reply', validators=[DataRequired()])
+    submit = SubmitField('Reply')
