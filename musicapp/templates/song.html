@@ -1,10 +1,10 @@
 {% extends "layout.html" %} {% block content %} {% if song %}
-<article class="media content-section" style="display: flex;">
+<article class="media content-section" style="display: flex">
     <div class="media-body">
         <div
             class="container"
             style="display: flex; justify-content: space-between">
-            <div class="article-metadata" style="flex: 7; position: relative;">
+            <div class="article-metadata" style="flex: 7; position: relative">
                 {% if song.owner == current_user or current_user.is_admin or
                 current_user.is_manager %}
                 <form
@@ -15,7 +15,12 @@
                 {% endif %}
                 <legend class="mb-1">{{ song.title }}</legend>
                 <p class="text-muted">
-                    By <a href><strong>{{ song.artist }}</strong></a> <br />
+                    By
+                    <a
+                        href="{{ url_for('artists.artist_info', artist_id=song.artist_id) }}"
+                        ><strong>{{ song.artist }}</strong></a
+                    >
+                    <br />
                     From <strong>{{ song.album }}</strong>
                 </p>
             </div>
@@ -55,122 +60,138 @@
                 window.location.href = nextSongUrl;
             }, false);
         </script>
-            <div class="song-controls"> 
-                <div class="prev-song">
-                    {% if prev_song %}
-                        <a class="btn btn-outline-info song-control" href="{{ url_for('songs.song', song_id=prev_song.id) }}">
-                            <i class="fas fa-chevron-left"></i> Previous Song
-                        </a>
-                    {% endif %}
-                </div>
-                <div class="next-song">
-                    {% if next_song %}
-                        <a class="btn btn-outline-info song-control" href="{{ url_for('songs.song', song_id=next_song.id) }}">
-                            Next Song <i class="fas fa-chevron-right"></i>
-                        </a>
-                    {% endif %}
-                </div>
-            </div>
-            <div class="btns">
+        <div class="song-controls">
+            <div class="prev-song">
+                {% if prev_song %}
                 <a
-                    class="btn btn-outline-info"
-                    href="{{ url_for('songs.download', song_id = song.id) }}">Download</a>
-                {% if song.owner == current_user or current_user.is_admin or
-                current_user.is_manager %}
-                <button
-                    type="button"
-                    class="btn btn-outline-danger m-2"
-                    data-bs-toggle="modal"
-                    data-bs-target="#deleteModalCenter">
-                    Delete
-                </button>
+                    class="btn btn-outline-info song-control"
+                    href="{{ url_for('songs.song', song_id=prev_song.id) }}">
+                    <i class="fas fa-chevron-left"></i> Previous Song
+                </a>
                 {% endif %}
             </div>
-            <div class="article-metadata" style="flex: 7; position: relative;">
-                <legend class="mb-1"> Related Songs </legend>
-                <ul class="song-list">
-                    {% for next_song in songs %}
-                        <li><a class="song-link" href="{{ url_for('songs.song', song_id=next_song.id) }}">{{ next_song.title }}</a></li>
-                    {% endfor %}
-                </ul>
+            <div class="next-song">
+                {% if next_song %}
+                <a
+                    class="btn btn-outline-info song-control"
+                    href="{{ url_for('songs.song', song_id=next_song.id) }}">
+                    Next Song <i class="fas fa-chevron-right"></i>
+                </a>
+                {% endif %}
             </div>
         </div>
-    </article>
-    <!-- Modal -->
-    <div
-        class="modal fade"
-        id="deleteModalCenter"
-        tabindex="-1"
-        aria-labelledby="deleteModalCenterTitle"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLongTitle">
-                        Delete Song?
-                    </h5>
-                    <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"></button>
-                </div>
-                <div class="modal-footer">
-                    <button
-                        type="button"
-                        class="btn btn-secondary"
-                        data-bs-dismiss="modal">
-                        Close
-                    </button>
-                    <form
-                        action="{{ url_for('songs.delete', song_id=song.id) }}"
-                        method="post">
-                        <input
-                            type="submit"
-                            class="btn btn-danger"
-                            value="Delete" />
-                    </form>
-                </div>
+        <div class="btns">
+            <a
+                class="btn btn-outline-info"
+                href="{{ url_for('songs.download', song_id = song.id) }}"
+                >Download</a
+            >
+            {% if song.owner == current_user or current_user.is_admin or
+            current_user.is_manager %}
+            <button
+                type="button"
+                class="btn btn-outline-danger m-2"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteModalCenter">
+                Delete
+            </button>
+            {% endif %}
+        </div>
+        <div class="article-metadata" style="flex: 7; position: relative">
+            <legend class="mb-1">Related Songs</legend>
+            <ul class="song-list">
+                {% for next_song in songs %}
+                <li>
+                    <a
+                        class="song-link"
+                        href="{{ url_for('songs.song', song_id=next_song.id) }}"
+                        >{{ next_song.title }}</a
+                    >
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</article>
+<!-- Modal -->
+<div
+    class="modal fade"
+    id="deleteModalCenter"
+    tabindex="-1"
+    aria-labelledby="deleteModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLongTitle">
+                    Delete Song?
+                </h5>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-footer">
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+                    Close
+                </button>
+                <form
+                    action="{{ url_for('songs.delete', song_id=song.id) }}"
+                    method="post">
+                    <input
+                        type="submit"
+                        class="btn btn-danger"
+                        value="Delete" />
+                </form>
             </div>
         </div>
     </div>
-    <!-- likes -->
-    <div class="likes">
-        <h2>Likes: {{ song.likes.count() }}</h2>
-        <form action="{{ url_for('songs.like', song_id=song.id) }}" method="post">
-            <button type="submit" class="btn btn-primary">Like</button>
-        </form>
-    </div>
+</div>
+<!-- likes -->
+<div class="likes">
+    <h2>Likes: {{ song.likes.count() }}</h2>
+    <form action="{{ url_for('songs.like', song_id=song.id) }}" method="post">
+        <button type="submit" class="btn btn-primary">Like</button>
+    </form>
+</div>
 
-    <!-- comments -->
-    <div class="comments">
-        <h2>Comments</h2>
-        {% for comment in song.comments %}
-            <div class="comment">
-                <p>{{ comment.text }}</p>
-                <p>Posted by {{ comment.user.username }}</p>
-    
-                <!-- Replies -->
-                <div class="replies">
-                    {% for reply in comment.replies %}
-                        <div class="reply">
-                            <p>{{ reply.text }}</p>
-                            <p>Posted by {{ reply.user.username }}</p>
-                        </div>
-                    {% endfor %}
-                    <form action="{{ url_for('songs.reply', comment_id=comment.id) }}" method="post">
-                        <textarea name="text" required></textarea>
-                        <button type="submit" class="btn btn-primary">Reply</button>
-                    </form>
-                </div>
+<!-- comments -->
+<div class="comments">
+    <h2>Comments</h2>
+    {% for comment in song.comments %}
+    <div class="comment">
+        <p>{{ comment.text }}</p>
+        <p>Posted by {{ comment.user.username }}</p>
+
+        <!-- Replies -->
+        <div class="replies">
+            {% for reply in comment.replies %}
+            <div class="reply">
+                <p>{{ reply.text }}</p>
+                <p>Posted by {{ reply.user.username }}</p>
             </div>
-        {% endfor %}
-        <form action="{{ url_for('songs.comment', song_id=song.id) }}" method="post">
-            <textarea name="text" required></textarea>
-            <button type="submit" class="btn btn-primary">Comment</button>
-        </form>
+            {% endfor %}
+            <form
+                action="{{ url_for('songs.reply', comment_id=comment.id) }}"
+                method="post">
+                <textarea name="text" required></textarea>
+                <button type="submit" class="btn btn-primary">Reply</button>
+            </form>
+        </div>
     </div>
-    {% else %}
-    <h2>Song does not exist!</h2>
-    <p class="text-muted">Try to play other songs.</p>
-    {% endif %} {% endblock content %}
+    {% endfor %}
+    <form
+        action="{{ url_for('songs.comment', song_id=song.id) }}"
+        method="post">
+        <textarea name="text" required></textarea>
+        <button type="submit" class="btn btn-primary">Comment</button>
+    </form>
+</div>
+{% else %}
+<h2>Song does not exist!</h2>
+<p class="text-muted">Try to play other songs.</p>
+{% endif %} {% endblock content %}

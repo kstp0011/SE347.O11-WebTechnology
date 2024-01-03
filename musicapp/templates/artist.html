@@ -20,7 +20,7 @@
                     <td>{{ artist.image }}</td>
                     <td>
                         <a
-                            href="{{ url_for('artists.artist_songs', artist_id=artist.id) }}"
+                            href="{{ url_for('artists.artist_info', artist_id=artist.id) }}"
                             class="song-body text-decoration-none"
                             >{{ artist.name }}</a
                         >
