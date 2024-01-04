@@ -48,7 +48,9 @@ class Song(db.Model):
     likes = db.relationship('Like', backref='song', lazy='dynamic')
     artist_info = db.relationship(
         'Artist_info', backref=db.backref('songs', lazy=True))
-
+    
+    def is_liked_by(self, user):
+        return self.likes.filter_by(user_id=user.id).first() is not None
     # in development
     # genre = db.Column(db.String(50))
     # cover = db.Column(db.String(150))
@@ -79,6 +81,7 @@ class Comment(db.Model):
     text = db.Column(db.String(140))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     song_id = db.Column(db.Integer, db.ForeignKey('song.id'))
+    replies = db.relationship('Reply', backref='comment', lazy='dynamic')
 
 
 class Reply(db.Model):

@@ -5,15 +5,13 @@
             class="container"
             style="display: flex; justify-content: space-between">
             <div class="article-metadata" style="flex: 7; position: relative">
-                {% if song.owner == current_user or current_user.is_admin or
-                current_user.is_manager %}
-                <form
-                    action="{{ url_for('songs.edit', song_id=song.id) }}"
-                    method="post">
-                    <button type="submit" class="edit-button">Edit</button>
-                </form>
-                {% endif %}
-                <legend class="mb-1">{{ song.title }}</legend>
+                <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                    <legend class="mb-1">
+                        {{ song.title }}
+                    </legend>
+                    <!-- like count -->
+                    <legend class="right-align"><span id="like-count">{{ song.likes.count() }}</span>💓</legend>
+                </div>
                 <p class="text-muted">
                     By
                     <a
@@ -23,6 +21,21 @@
                     <br />
                     From <strong>{{ song.album }}</strong>
                 </p>
+                <!-- edit and like button -->
+                <div>
+                    {% if song.owner == current_user or current_user.is_admin or current_user.is_manager %}
+                    <form action="{{ url_for('songs.edit', song_id=song.id) }}" method="post">
+                        <button type="submit" class="edit-button">Edit</button>
+                    </form>
+                    {% endif %}
+                    <form id="like-form" class="right-align" action="{{ url_for('songs.like', song_id=song.id) }}" method="post" style="display: block;">
+                        {% if song.is_liked_by(current_user) %}
+                        <button id="like-button" type="submit" class="btn btn-primary">Unlike</button>
+                        {% else %}
+                        <button id="like-button" type="submit" class="btn btn-primary">Like</button>
+                        {% endif %}
+                    </form>
+                </div>
             </div>
             <div
                 class="container"
@@ -151,14 +164,28 @@
         </div>
     </div>
 </div>
-<!-- likes -->
-<div class="likes">
-    <h2>Likes: {{ song.likes.count() }}</h2>
-    <form action="{{ url_for('songs.like', song_id=song.id) }}" method="post">
-        <button type="submit" class="btn btn-primary">Like</button>
-    </form>
-</div>
-
+<!-- like script -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#like-form').submit(function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: "{{ url_for('songs.like', song_id=song.id) }}",
+                method: 'POST',
+                success: function(response) {
+                    if (response.liked) {
+                        $('#like-button').text('Unlike');
+                    } else {
+                        $('#like-button').text('Like');
+                    }
+                    $('#like-count').text(response.like_count);
+                }
+            });
+            return false;
+        });
+    });
+    </script>
 <!-- comments -->
 <div class="comments">
     <h2>Comments</h2>
