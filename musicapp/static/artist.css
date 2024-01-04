@@ -58,3 +58,10 @@
     margin-left: 10px;
     margin-right: 10px;
 }
+
+.account-img {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    margin-right: 10px;
+}

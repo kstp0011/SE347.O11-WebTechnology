@@ -17,7 +17,22 @@
                         {{ ((artists.page - 1) * artists.per_page) + loop.index
                         }}
                     </td>
-                    <td>{{ artist.image }}</td>
+                    <td>
+                        {% if artist.image_file %}
+                        <img
+                            src="{{ url_for('static', filename='artist_images/' +
+                            artist.image_file) }}"
+                            alt="artist_image"
+                            class="rounded-circle account-img"
+                        />
+                        {% else %}
+                        <img
+                            src="{{ url_for('static', filename='artist_images/default.png') }}"
+                            alt="artist_image"
+                            class="rounded-circle account-img"
+                        />
+                        {% endif %}
+                    </td>
                     <td>
                         <a
                             href="{{ url_for('artists.artist_info', artist_id=artist.id) }}"
