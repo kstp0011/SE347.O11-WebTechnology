@@ -217,7 +217,7 @@ def song(song_id):
 def edit(song_id):
     form = SongMetadataForm()
     song = Song.query.get_or_404(song_id)
-    if song.owner != current_user:
+    if song.owner != current_user and not current_user.is_admin and not current_user.is_manager:
         abort(403)
 
     if form.validate_on_submit():

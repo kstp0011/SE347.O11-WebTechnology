@@ -9,6 +9,8 @@ class Config:
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
     UPLOAD_FOLDER = os.path.join(
         os.getcwd(), 'musicapp/static/uploads')
+    UPLOAD_FOLDER_IMAGES = os.path.join(
+        os.getcwd(), 'musicapp/static/artist_images')
     MAIL_SERVER = 'smtp.googlemail.com'
     MAIL_PORT = 587
     MAIL_USE_TLS = True
