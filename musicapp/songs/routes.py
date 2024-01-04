@@ -1,7 +1,7 @@
 import requests
 from flask import request, jsonify
 import os
-from flask import render_template, url_for, flash, redirect, request, send_file, abort, Blueprint, request, current_app as app
+from flask import render_template, url_for, flash, redirect, request, send_file, abort, Blueprint, request, jsonify, current_app as app
 from flask_login import current_user, login_required
 from sqlalchemy import or_
 from sqlalchemy.exc import SQLAlchemyError
@@ -200,7 +200,8 @@ def song(song_id):
 
     # Query for likes, comments, and replies
     likes = Like.query.filter_by(song_id=song_id).all()
-    comments = Comment.query.filter_by(song_id=song_id).all()
+    comments = Comment.query.filter_by(
+        song_id=song_id).order_by(Comment.id.desc()).all()
     replies = Reply.query.join(Comment, (Reply.comment_id == Comment.id)).filter(
         Comment.song_id == song_id).all()
 
@@ -335,43 +336,95 @@ def search_music_route():
     return jsonify(results)
 
 
+# @songs.route('/like/<int:song_id>', methods=['POST'])
+# @login_required
+# def like(song_id):
+#     # code to handle liking a song
+#     song = Song.query.get_or_404(song_id)
+#     like = Like.query.filter_by(
+#         user_id=current_user.id, song_id=song_id).first()
+#     if like:
+#         db.session.delete(like)
+#         db.session.commit()
+#         return jsonify({'liked': False})
+#     else:
+#         like = Like(user_id=current_user.id, song_id=song_id)
+#         db.session.add(like)
+#         db.session.commit()
+#         return jsonify({'liked': True})
+
+
+# @songs.route('/comment/<int:song_id>', methods=['POST'])
+# @login_required
+# def comment(song_id):
+#     # code to handle commenting on a song
+#     song = Song.query.get_or_404(song_id)
+#     comment = Comment(
+#         text=request.form['comment'], user_id=current_user.id, song_id=song_id)
+#     db.session.add(comment)
+#     db.session.commit()
+#     return redirect(url_for('songs.song', song_id=song_id))
+
+
+# @songs.route('/reply/<int:comment_id>', methods=['POST'])
+# @login_required
+# def reply(comment_id):
+#     # code to handle replying to a comment
+#     comment = Comment.query.get_or_404(comment_id)
+#     reply = Reply(text=request.form['reply'],
+#                   user_id=current_user.id, comment_id=comment_id)
+#     db.session.add(reply)
+#     db.session.commit()
+#     return redirect(url_for('songs.song', song_id=comment.song_id))
+
+
+# like direct
 @songs.route('/like/<int:song_id>', methods=['POST'])
 @login_required
 def like(song_id):
-    # code to handle liking a song
     song = Song.query.get_or_404(song_id)
     like = Like.query.filter_by(
         user_id=current_user.id, song_id=song_id).first()
     if like:
         db.session.delete(like)
         db.session.commit()
-        return jsonify({'liked': False})
+        return jsonify({'liked': False, 'like_count': song.likes.count()})
     else:
         like = Like(user_id=current_user.id, song_id=song_id)
         db.session.add(like)
         db.session.commit()
-        return jsonify({'liked': True})
+        return jsonify({'liked': True, 'like_count': song.likes.count()})
 
+# comment direct to jsonify
+
+
+# @songs.route('/comment/<int:song_id>', methods=['POST'])
+# @login_required
+# def comment(song_id):
+#     song = Song.query.get_or_404(song_id)
+#     text = request.form.get('text')
+#     comment = Comment(text=text, user_id=current_user.id, song_id=song_id)
+#     db.session.add(comment)
+#     db.session.commit()
+#     return jsonify({'text': comment.text, 'user': {'username': current_user.username}})
 
 @songs.route('/comment/<int:song_id>', methods=['POST'])
 @login_required
 def comment(song_id):
-    # code to handle commenting on a song
     song = Song.query.get_or_404(song_id)
-    comment = Comment(
-        text=request.form['comment'], user_id=current_user.id, song_id=song_id)
+    text = request.form.get('text')
+    comment = Comment(text=text, user_id=current_user.id, song_id=song_id)
     db.session.add(comment)
     db.session.commit()
-    return redirect(url_for('songs.song', song_id=song_id))
+    return jsonify({'text': comment.text, 'user': {'username': current_user.username}, 'comment_id': comment.id})
 
 
 @songs.route('/reply/<int:comment_id>', methods=['POST'])
 @login_required
 def reply(comment_id):
-    # code to handle replying to a comment
     comment = Comment.query.get_or_404(comment_id)
-    reply = Reply(text=request.form['reply'],
-                  user_id=current_user.id, comment_id=comment_id)
+    text = request.form.get('text')
+    reply = Reply(text=text, user_id=current_user.id, comment_id=comment_id)
     db.session.add(reply)
     db.session.commit()
-    return redirect(url_for('songs.song', song_id=comment.song_id))
+    return jsonify({'text': reply.text, 'user': {'username': current_user.username}, 'comment_id': comment_id})

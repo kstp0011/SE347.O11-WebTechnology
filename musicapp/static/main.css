@@ -177,3 +177,9 @@ a.article-title:hover {
     flex-grow: 1;
     text-align: right;
 }
+.right-align {
+    text-align: right;
+}
+.replies {
+    display: none;
+}

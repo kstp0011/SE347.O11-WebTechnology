@@ -26,8 +26,8 @@
 
 .edit-button {
     position: absolute;
-    top: 10px;  
-    right: 10px; 
+    /* bottom: 10px;   */
+    left: 10px; 
     background-color: red;
     color: white;
     border: none;
@@ -40,5 +40,4 @@
 .edit-button:hover {
     background-color: darkred;
 }
-
 
