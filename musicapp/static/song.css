@@ -41,26 +41,3 @@
     background-color: darkred;
 }
 
-.heart {
-    position: relative;
-}
-
-.heart::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #ff0000;
-    transform: scale(0);
-    border-radius: 50%;
-    opacity: 0.5;
-    pointer-events: none;
-    transition: transform 0.5s, opacity 1s;
-}
-
-.heart:active::before {
-    transform: scale(2);
-    opacity: 0;
-}

@@ -392,6 +392,16 @@ def like(song_id):
 # comment direct to jsonify
 
 
+# @songs.route('/comment/<int:song_id>', methods=['POST'])
+# @login_required
+# def comment(song_id):
+#     song = Song.query.get_or_404(song_id)
+#     text = request.form.get('text')
+#     comment = Comment(text=text, user_id=current_user.id, song_id=song_id)
+#     db.session.add(comment)
+#     db.session.commit()
+#     return jsonify({'text': comment.text, 'user': {'username': current_user.username}})
+
 @songs.route('/comment/<int:song_id>', methods=['POST'])
 @login_required
 def comment(song_id):
@@ -400,4 +410,15 @@ def comment(song_id):
     comment = Comment(text=text, user_id=current_user.id, song_id=song_id)
     db.session.add(comment)
     db.session.commit()
-    return jsonify({'text': comment.text, 'user': {'username': current_user.username}})
+    return redirect(url_for('songs.song', song_id=song_id))
+
+
+@songs.route('/reply/<int:comment_id>', methods=['POST'])
+@login_required
+def reply(comment_id):
+    comment = Comment.query.get_or_404(comment_id)
+    text = request.form.get('text')
+    reply = Reply(text=text, user_id=current_user.id, comment_id=comment_id)
+    db.session.add(reply)
+    db.session.commit()
+    return redirect(url_for('songs.song', song_id=comment.song_id))
