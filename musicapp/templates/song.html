@@ -232,11 +232,9 @@
         <div class="card-body">
             <h5 class="card-title">{{ comment.user.username }}</h5>
             <p class="card-text">{{ comment.text }}</p>
-            {% if comment.replies.count() > 0 %}
-                <button class="show-replies btn btn-primary">Show/Hide Replies</button>
-            {% endif %}
+            <button class="show-replies btn btn-primary">Show/Hide Replies</button>
             <!-- Replies -->
-            <div class="replies">
+            <div id="replies-{{ comment.id }}" class="replies">
                 {% for reply in comment.replies %}
                 <div class="card mt-3 ml-5">
                     <div class="card-body">
@@ -246,26 +244,52 @@
                 </div>
                 {% endfor %}
             </div>
-            
+
             <!-- Reply form -->
-            <form action="{{ url_for('songs.reply', comment_id=comment.id) }}" method="post" class="mt-3">
+            <form id="reply-form-{{ comment.id }}" action="{{ url_for('songs.reply', comment_id=comment.id) }}" method="post" class="mt-3">
                 <div class="input-group">
                     <textarea name="text" class="form-control" placeholder="Write a reply..." required></textarea>
                     <button type="submit" class="btn btn-primary">Reply</button>
                 </div>
             </form>
-            
         </div>
     </div>
     {% endfor %}
 </div>
 <!-- show replies func -->
 <script>
-    $(document).ready(function() {
+$(document).ready(function() {
+    $('form[id^="reply-form-"]').submit(function(e) {
+        e.preventDefault();
+        var formId = $(this).attr('id');
+        var commentId = formId.split('-')[2];
+        $.ajax({
+            url: $(this).attr('action'),
+            method: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+                // Add the new reply to the replies section
+                var reply = $(
+                    '<div class="card mt-3 ml-5">' +
+                        '<div class="card-body">' +
+                            '<h6 class="card-title">' + response.user.username + '</h6>' +
+                            '<p class="card-text">' + response.text + '</p>' +
+                        '</div>' +
+                    '</div>'
+                );
+                $('#replies-' + commentId).prepend(reply);
+                // Clear the reply form
+                $('#reply-form-' + commentId + ' textarea[name="text"]').val('');
+            }
+        });
+    });
+});
+$(document).ready(function() 
+{
         $('.show-replies').click(function() {
             $(this).nextAll('.replies').first().toggle();
         });
-    });
+});
 </script>
 {% else %}
 <h2>Song does not exist!</h2>
