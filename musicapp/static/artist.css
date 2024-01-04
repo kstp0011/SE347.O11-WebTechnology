@@ -1,0 +1,21 @@
+.artist-banner {
+    position: relative;
+    display: flex;
+    background-color: #f8f9fa; /* Light gray background */
+    border-radius: 8px; /* Rounded corners */
+    padding: 20px; /* Padding inside the div */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    font-family: "Arial", sans-serif; /* Font family */
+    max-width: 600px; /* Maximum width of the div */
+}
+
+.artist-banner h1 {
+    color: #007bff; /* Blue color for the title */
+    font-size: 2em; /* Larger font size for the title */
+    font-weight: bold; /* Bold font weight for the title */
+    margin-bottom: 10px; /* Margin at the bottom of the title */
+}
+
+.artist-info {
+    padding-left: 40px;
+}

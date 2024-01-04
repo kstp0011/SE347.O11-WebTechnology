@@ -27,9 +27,11 @@ def create_app(config_class=Config):
     from musicapp.songs.routes import songs
     from musicapp.main.routes import main
     from musicapp.errors.handlers import errors
+    from musicapp.artist.routes import artists
     app.register_blueprint(users)
     app.register_blueprint(songs)
     app.register_blueprint(main)
     app.register_blueprint(errors)
+    app.register_blueprint(artists)
 
     return app

@@ -1,0 +1,66 @@
+{% extends "layout.html" %} {% block content %} {% if artists.items %}
+<legend class="border-bottom mb-4">All Artists</legend>
+<article class="media content-section">
+    <div class="media-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for artist in artists.items %}
+                <tr class="my-4">
+                    <td scope="row">
+                        {{ ((artists.page - 1) * artists.per_page) + loop.index
+                        }}
+                    </td>
+                    <td>{{ artist.image }}</td>
+                    <td>
+                        <a
+                            href="{{ url_for('artists.artist_info', artist_id=artist.id) }}"
+                            class="song-body text-decoration-none"
+                            >{{ artist.name }}</a
+                        >
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if artists.pages > 1 %}
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                {% for page_num in artists.iter_pages() %} {% if page_num %} {%
+                if artists.page == page_num %}
+                <li class="page-item active">
+                    <a
+                        class="page-link"
+                        href="{{ url_for('main.collection', page=page_num) }}"
+                        >{{ page_num }}</a
+                    >
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a
+                        class="page-link"
+                        href="{{ url_for('main.collection', page=page_num) }}"
+                        >{{ page_num }}</a
+                    >
+                </li>
+                {% endif %} {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                </li>
+                {% endif %} {% endfor %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</article>
+{% else %}
+<h2>All artists will appear here</h2>
+<p class="text-muted">Please upload songs by clicking on upload button!</p>
+{% endif %} {% endblock content %}
