@@ -2,6 +2,7 @@ from flask.cli import FlaskGroup
 from musicapp import create_app, db
 import os
 from musicapp.config import Config
+from musicapp.models import User, Song, Artist_info, Like, Comment, Reply
 
 app = create_app()
 cli = FlaskGroup(create_app=create_app)
@@ -22,6 +23,11 @@ def drop_db():
     for filename in os.listdir(folder):
         file_path = os.path.join(folder, filename)
         os.remove(file_path)
+    folder = Config.UPLOAD_FOLDER_IMAGES
+    for filename in os.listdir(folder):
+        file_path = os.path.join(folder, filename)
+        if filename != 'default.png':
+            os.remove(file_path)
 
 
 @cli.command("create_admin")
@@ -62,9 +68,14 @@ def create_admin():
 @cli.command("clear_db")
 def clear_db():
     # clear data from all tables but keep the schema
-    from musicapp.models import User, Song
+
     User.query.delete()
     Song.query.delete()
+    Artist_info.query.delete()
+    Like.query.delete()
+    Comment.query.delete()
+    Reply.query.delete()
+
     db.session.commit()
     # drop all files in upload folder
     import os
@@ -73,6 +84,11 @@ def clear_db():
     for filename in os.listdir(folder):
         file_path = os.path.join(folder, filename)
         os.remove(file_path)
+    folder = Config.UPLOAD_FOLDER_IMAGES
+    for filename in os.listdir(folder):
+        file_path = os.path.join(folder, filename)
+        if filename != 'default.png':
+            os.remove(file_path)
 
 
 if __name__ == "__main__":

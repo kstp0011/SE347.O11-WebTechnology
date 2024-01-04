@@ -24,7 +24,7 @@
                 <!-- edit and like button -->
                 <div>
                     {% if song.owner == current_user or current_user.is_admin or current_user.is_manager %}
-                    <form action="{{ url_for('songs.edit', song_id=song.id) }}" method="post">
+                    <form action="{{ url_for('songs.edit', song_id=song.id) }}" method="get">
                         <button type="submit" class="edit-button">Edit</button>
                     </form>
                     {% endif %}

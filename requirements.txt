@@ -41,3 +41,4 @@ typing_extensions==4.5.0
 Werkzeug==2.2.3
 WTForms==3.0.1
 pwinput==1.0.3
+pillow==10.1.0

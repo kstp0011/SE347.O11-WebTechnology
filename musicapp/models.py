@@ -64,7 +64,7 @@ class Song(db.Model):
 class Artist_info(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), nullable=False)
-    birth_date = db.Column(db.DateTime)
+    birth_date = db.Column(db.Date)
     image = db.Column(db.String(150))
 
     def __repr__(self) -> str:

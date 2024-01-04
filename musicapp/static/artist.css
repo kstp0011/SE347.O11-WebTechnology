@@ -1,10 +1,10 @@
 .artist-banner {
     position: relative;
     display: flex;
-    background-color: #f8f9fa; /* Light gray background */
+    /* background-color: #f8f9fa; */
     border-radius: 8px; /* Rounded corners */
     padding: 20px; /* Padding inside the div */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
     font-family: "Arial", sans-serif; /* Font family */
     max-width: 600px; /* Maximum width of the div */
 }
@@ -18,4 +18,50 @@
 
 .artist-info {
     padding-left: 40px;
+}
+
+.song-list {
+    max-width: 1000px;
+    min-width: 600px;
+    border: 1px solid #ced4da;
+    max-width: 600px;
+    border-radius: 8px;
+    margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.scrollable-song-list {
+    height: 500px;
+    overflow-y: auto;
+}
+
+.song-list h2 {
+    font-size: 1.5em;
+    font-weight: bold;  
+    padding-left: 25px;
+    /* border: 1px solid #ced4da; */
+    padding-bottom: 10px;
+    padding-top: 10px;
+    border-radius: 8px;
+}
+
+.song-item {
+    /* Chiều cao tương đương với 1 bài hát */
+    height: 50px;
+    padding-left: 30px;
+    font-size: 1.2em;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.account-img {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    margin-right: 10px;
 }
