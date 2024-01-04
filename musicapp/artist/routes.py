@@ -1,4 +1,4 @@
-from flask import render_template, request, Blueprint, url_for, abort
+from flask import render_template, request, Blueprint, url_for, abort, flash, redirect
 from flask_login import current_user, login_required
 from musicapp.models import Song, Artist_info, Like
 from musicapp.songs.forms import SearchForm
@@ -8,6 +8,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.sql import func
 from musicapp.artist.forms import ArtistForm
 from musicapp.artist.utils import save_image
+import os
+from flask import current_app as app
 
 artists = Blueprint('artists', __name__)
 
@@ -49,20 +51,24 @@ def edit_artist(artist_id):
     form = ArtistForm()
     artist = Artist_info.query.get_or_404(artist_id)
     if current_user.is_admin == False and current_user.is_manager == False:
-        abort(403)
+        abort(403) 
         
     if form.validate_on_submit():
         artist.name = form.name.data
-        artist.DateOfBirth = form.DateOfBirth.data
+        artist.birth_date = form.birth_date.data
+        # Delete old image if new image is uploaded
         if form.image.data:
+            if artist.image and artist.image != 'default.png':
+                os.remove(os.path.join(app.config['UPLOAD_FOLDER_IMAGES'], artist.image))
             image_file = save_image(form.image.data)
             artist.image = image_file
         try:
             db.session.commit()
         except SQLAlchemyError as e:
             return render_template('errors/500.html', error=e), 500
-        return render_template('artist_info.html', title=artist.name, artist=artist, current_user=current_user)
+        flash('Artist has been updated!', 'success')
+        return redirect(url_for('artists.artist_info', artist_id=artist.id))
     elif request.method == 'GET':
         form.name.data = artist.name
-        form.DateOfBirth.data = artist.DateOfBirth
+        form.birth_date.data = artist.birth_date
     return render_template('edit_artist.html', title='Edit Artist', form=form, artist=artist, current_user=current_user)

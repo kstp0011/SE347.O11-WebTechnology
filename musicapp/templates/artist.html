@@ -18,10 +18,10 @@
                         }}
                     </td>
                     <td>
-                        {% if artist.image_file %}
+                        {% if artist.image %}
                         <img
                             src="{{ url_for('static', filename='artist_images/' +
-                            artist.image_file) }}"
+                            artist.image) }}"
                             alt="artist_image"
                             class="rounded-circle account-img"
                         />
