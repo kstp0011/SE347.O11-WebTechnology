@@ -9,7 +9,7 @@
                 current_user.is_manager %}
                 <form
                     action="{{ url_for('songs.edit', song_id=song.id) }}"
-                    method="post">
+                    method="get">
                     <button type="submit" class="edit-button">Edit</button>
                 </form>
                 {% endif %}

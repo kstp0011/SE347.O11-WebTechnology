@@ -11,6 +11,7 @@ from musicapp.models import Song, Artist_info, User, Like, Comment, Reply
 from musicapp import db
 from musicapp.songs.forms import SongForm, SearchForm, SongMetadataForm, CommentForm, ReplyForm
 from musicapp.songs.utils import save_song, search_music
+from musicapp.artist.routes import delete_artist
 
 import requests
 
@@ -233,6 +234,8 @@ def edit(song_id):
             db.session.add(artist_info)
             db.session.commit()
 
+        # delete old artist if no songs are associated with him/her
+        delete_artist(song.artist_id)
         song.title = title
         song.artist = artist_name
         song.artist_id = artist_info.id  # set the artist_id to the id of the artist_info
@@ -248,7 +251,7 @@ def edit(song_id):
         audio.tag.save()
 
         flash(f'Song `{title}` has been uploaded!', 'success')
-        return redirect(url_for('songs.upload'))
+        return redirect(url_for('songs.song', song_id=song_id))
     elif request.method == 'GET':
         form.title.data = song.title
         form.artist.data = song.artist
@@ -271,6 +274,8 @@ def delete(song_id):
         app.root_path, app.config['UPLOAD_FOLDER'], song.filename)
     os.remove(song_path)
 
+    # delete the artist if no songs are associated with him/her
+    delete_artist(song.artist_id)
     # delete the song from database
     db.session.delete(song)
     db.session.commit()

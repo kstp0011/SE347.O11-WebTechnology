@@ -72,3 +72,19 @@ def edit_artist(artist_id):
         form.name.data = artist.name
         form.birth_date.data = artist.birth_date
     return render_template('edit_artist.html', title='Edit Artist', form=form, artist=artist, current_user=current_user)
+
+
+def delete_artist(artist_id):
+    # Check if total songs is 1 (the song being deleted)
+    artist = Artist_info.query.get_or_404(artist_id)
+    artist_songs = Song.query.filter_by(artist_id=artist_id).all()
+    if len(artist_songs) > 1:
+        return False
+    
+    # Delete artist image if it exists
+    if artist.image and artist.image != 'default.png':
+        os.remove(os.path.join(app.config['UPLOAD_FOLDER_IMAGES'], artist.image))
+
+    db.session.delete(artist)
+    db.session.commit()
+    return True
