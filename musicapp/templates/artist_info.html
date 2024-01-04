@@ -3,7 +3,9 @@
     class="container artist-banner"
     style="display: flex; justify-content: center">
     {% if current_user.is_admin or current_user.is_manager %}
-    <form action="{{ url_for('artists.edit_artist', artist_id=artist.id) }}" method="post">
+    <form
+        action="{{ url_for('artists.edit_artist', artist_id=artist.id) }}"
+        method="post">
         <button type="submit" class="edit-button">Edit</button>
     </form>
     {% endif %}
@@ -21,7 +23,7 @@
                 {{ num_songs }}
                 <br />
                 <strong>Like:</strong>
-                -1
+                {{ total_likes }}
                 <br />
                 <strong>Day of Birth:</strong>
                 {{ artist.birth_date }}

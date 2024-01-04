@@ -38,9 +38,8 @@ def artist_info(artist_id):
         artist_image = url_for('static', filename='artist_images/default.png')
     num_songs = len(artist_songs)
     total_likes = 0
-    # for song in artist_songs:
-    #     likes_song = Like.query.filter_by(song_id=song.id).all()
-    #     likes += len(likes_song)
+    for song in artist_songs:
+        total_likes += db.session.query(func.count(Like.user_id)).filter_by(song_id=song.id).scalar()
     return render_template('artist_info.html', title=artist.name, artist=artist, artist_songs=artist_songs, artist_image=artist_image, num_songs=num_songs, total_likes=total_likes, current_user=current_user)
 
 
