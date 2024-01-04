@@ -180,3 +180,6 @@ a.article-title:hover {
 .right-align {
     text-align: right;
 }
+.replies {
+    display: none;
+}

@@ -260,16 +260,21 @@ $(document).ready(function() {
         <div class="card-body">
             <h5 class="card-title">{{ comment.user.username }}</h5>
             <p class="card-text">{{ comment.text }}</p>
-    
+            {% if comment.replies.count() > 0 %}
+                <button class="show-replies btn btn-primary">Show/Hide Replies</button>
+            {% endif %}
             <!-- Replies -->
-            {% for reply in comment.replies %}
-            <div class="card mt-3 ml-5">
-                <div class="card-body">
-                    <h6 class="card-title">{{ reply.user.username }}</h6>
-                    <p class="card-text">{{ reply.text }}</p>
+            <div class="replies">
+                {% for reply in comment.replies %}
+                <div class="card mt-3 ml-5">
+                    <div class="card-body">
+                        <h6 class="card-title">{{ reply.user.username }}</h6>
+                        <p class="card-text">{{ reply.text }}</p>
+                    </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
+            
             <!-- Reply form -->
             <form action="{{ url_for('songs.reply', comment_id=comment.id) }}" method="post" class="mt-3">
                 <div class="input-group">
@@ -277,16 +282,37 @@ $(document).ready(function() {
                     <button type="submit" class="btn btn-primary">Reply</button>
                 </div>
             </form>
+            
         </div>
     </div>
     {% endfor %}
-    </div>
-
-<!-- toggle replies -->
+</div>
 <script>
     $(document).ready(function() {
         $('.show-replies').click(function() {
-            $(this).siblings('.replies').find('.reply').toggle();
+            $(this).nextAll('.replies').first().toggle();
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        $('form').on('submit', function(event) {
+            event.preventDefault(); // Prevent the form from being submitted normally
+            var form = $(this);
+            $.ajax({
+                url: form.attr('action'),
+                method: 'POST',
+                data: form.serialize(),
+                success: function(response) {
+                    // Add the new reply to the page
+                    var reply = $('<div class="card mt-3 ml-5"><div class="card-body"><h6 class="card-title">' + response.user.username + '</h6><p class="card-text">' + response.text + '</p></div></div>');
+                    form.prev('.replies').append(reply);
+                    form[0].reset(); // Clear the form
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error(textStatus, errorThrown);
+                }
+            });
         });
     });
 </script>
