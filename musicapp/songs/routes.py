@@ -199,7 +199,8 @@ def song(song_id):
 
     # Query for likes, comments, and replies
     likes = Like.query.filter_by(song_id=song_id).all()
-    comments = Comment.query.filter_by(song_id=song_id).all()
+    comments = Comment.query.filter_by(
+        song_id=song_id).order_by(Comment.id.desc()).all()
     replies = Reply.query.join(Comment, (Reply.comment_id == Comment.id)).filter(
         Comment.song_id == song_id).all()
 
@@ -410,7 +411,7 @@ def comment(song_id):
     comment = Comment(text=text, user_id=current_user.id, song_id=song_id)
     db.session.add(comment)
     db.session.commit()
-    return redirect(url_for('songs.song', song_id=song_id))
+    return jsonify({'text': comment.text, 'user': {'username': current_user.username}, 'comment_id': comment.id})
 
 
 @songs.route('/reply/<int:comment_id>', methods=['POST'])
@@ -421,4 +422,4 @@ def reply(comment_id):
     reply = Reply(text=text, user_id=current_user.id, comment_id=comment_id)
     db.session.add(reply)
     db.session.commit()
-    return redirect(url_for('songs.song', song_id=comment.song_id))
+    return jsonify({'text': reply.text, 'user': {'username': current_user.username}, 'comment_id': comment_id})
