@@ -490,7 +490,8 @@ def playlist(playlist_id):
     playlist = Playlist.query.get_or_404(playlist_id)
     if playlist.user_id != current_user.id:
         abort(403)
-    return render_template('playlist.html', title=playlist.name, playlist=playlist)
+    all_songs = Song.query.all()
+    return render_template('playlist.html', title=playlist.name, playlist=playlist, all_songs=all_songs)
 
 
 @songs.route("/playlist/<int:playlist_id>/add", methods=['POST'])
@@ -503,3 +504,50 @@ def add_song_to_playlist(playlist_id):
     db.session.commit()
     flash('Song added to playlist!', 'success')
     return redirect(url_for('songs.playlist', playlist_id=playlist_id))
+
+# play the playlist music
+
+
+@songs.route('/playlist/play/<int:playlist_id>/<int:song_id>', methods=['GET', 'POST'])
+@login_required
+def play_playlist(playlist_id, song_id):
+    playlist = Playlist.query.get_or_404(playlist_id)
+    if playlist.user_id != current_user.id:
+        abort(403)
+    if not playlist.songs:
+        flash('No songs in the playlist', 'warning')
+        return redirect(url_for('main.home'))
+    song = Song.query.get_or_404(song_id)  # play the specific song
+    song_file = url_for('static', filename='uploads/' + song.filename)
+
+    # Get the index of the current song in the playlist
+    current_index = playlist.songs.index(song)
+
+    # If this is not the first song in the playlist, get the previous song
+    if current_index > 0:
+        prev_song = playlist.songs[current_index - 1]
+    else:
+        prev_song = None
+
+    # If this is not the last song in the playlist, get the next song
+    if current_index < len(playlist.songs) - 1:
+        next_song = playlist.songs[current_index + 1]
+    else:
+        next_song = None
+
+    return render_template('playlist_player.html', title=playlist.name, playlist=playlist, song=song, music=song_file, next_song=next_song, prev_song=prev_song)
+
+
+@songs.route('/like/<int:song_id>', methods=['POST'])
+@login_required
+def like_song(song_id):
+    song = Song.query.get_or_404(song_id)
+    if song.is_liked_by(current_user):
+        song.unlike(current_user)
+        liked = False
+    else:
+        song.like(current_user)
+        liked = True
+    db.session.commit()
+    like_count = len(song.likes)  # Get the new like count
+    return jsonify({'liked': liked, 'like_count': like_count})

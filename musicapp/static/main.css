@@ -236,3 +236,8 @@ body.dark-theme .table {
 body.dark-theme h2.account.heading {
     color: #000000;
 }
+
+/* dark mode col-md-8 h2 */
+body.dark-theme .col-md-8 h1 {
+    color: #ffffff;
+}

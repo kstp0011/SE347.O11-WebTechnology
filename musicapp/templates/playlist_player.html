@@ -1,0 +1,112 @@
+{% extends "layout.html" %}
+{% block content %}
+{% if playlist.songs %}
+<article class="media content-section" style="display: flex">
+    <div class="media-body">
+        <div class="container" style="display: flex; justify-content: space-between">
+            <div class="article-metadata" style="flex: 7; position: relative">
+                <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                    <legend class="mb-1">
+                        {{ song.title }}
+                    </legend>
+                    <!-- like count -->
+                    <legend class="right-align"><span id="like-count">{{ song.likes.count() }}</span>💓</legend>
+                </div>
+                <p class="text-muted">
+                    By
+                    <a href="{{ url_for('artists.artist_info', artist_id=song.artist_id) }}"><strong>{{ song.artist }}</strong></a>
+                    <br />
+                    From <strong>{{ song.album }}</strong>
+                </p>
+                <!-- edit and like button -->
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                <form id="like-form" class="right-align" action="{{ url_for('songs.like', song_id=song.id) }}" method="post" style="display: block;">
+                    {% if song.is_liked_by(current_user) %}
+                    <button id="like-button" type="submit" class="btn btn-primary">Unlike</button>
+                    {% else %}
+                    <button id="like-button" type="submit" class="btn btn-primary">Like</button>
+                    {% endif %}
+                </form>
+                <script>
+                $(document).ready(function() {
+                    $('#like-form').submit(function(e) {
+                        e.preventDefault();
+                        $.ajax({
+                            url: "{{ url_for('songs.like', song_id=song.id) }}",
+                            method: 'POST',
+                            success: function(response) {
+                                if (response.liked) {
+                                    $('#like-button').text('Unlike');
+                                } else {
+                                    $('#like-button').text('Like');
+                                }
+                                $('#like-count').text(response.like_count);
+                            }
+                        });
+                        return false;
+                    });
+                });
+                </script>
+            </div>
+            <div class="container" style="flex: 3; display: flex; justify-content: center; align-items: center; margin: 5px;">
+                <img src="{{ url_for('static', filename='Images/MusicLib_Logo.PNG') }}" class="img-fluid" style="border-radius: 10px" />
+            </div>
+        </div>
+        <audio
+            id="audioPlayer"
+            controls
+            autoplay
+            controlslist="nodownload"
+            class="w-100 mt-2 mb-2">
+            <source src="{{ music }}" type="audio/mp3" />
+            <source src="{{ music }}" type="audio/mpeg" />
+            <source src="{{ music }}" type="audio/wav" />
+            Your browser does not support the audio tag.
+        </audio>
+        <script>
+            document.getElementById('audioPlayer').addEventListener('ended', function() {
+                {% if next_song %}
+                // If there is a next song, redirect to it
+                var nextSongUrl = "{{ url_for('songs.play_playlist', playlist_id=playlist.id, song_id=next_song.id) }}";
+                window.location.href = nextSongUrl;
+                {% else %}
+                // If this is the last song in the playlist, redirect to the playlist page
+                window.location.href = "{{ url_for('songs.playlist', playlist_id=playlist.id) }}";
+                {% endif %}
+            }, false);
+        </script>
+        <div class="song-controls">
+            <div class="prev-song">
+                {% if prev_song %}
+                <a class="btn btn-outline-info song-control" href="{{ url_for('songs.play_playlist', playlist_id=playlist.id, song_id=prev_song.id) }}">
+                    <i class="fas fa-chevron-left"></i> Previous Song
+                </a>
+                {% endif %}
+            </div>
+            <div class="next-song">
+                {% if next_song %}
+                <a class="btn btn-outline-info song-control" href="{{ url_for('songs.play_playlist', playlist_id=playlist.id, song_id=next_song.id) }}">
+                    Next Song <i class="fas fa-chevron-right"></i>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="article-metadata" style="flex: 7; position: relative">
+            <legend class="mb-1">{{playlist.name}}</legend>
+            <ul class="song-list">
+                {% for song in playlist.songs %}
+                <li>
+                    <a class="song-link" href="{{ url_for('songs.song', song_id=song.id) }}">
+                        {{ song.title }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</article>
+{% else %}
+<h2>Playlist is empty!</h2>
+<p class="text-muted">Try to add some songs.</p>
+{% endif %} 
+{% endblock content %}
