@@ -126,6 +126,7 @@ a.article-title:hover {
 .media-body {
     flex: 1;
 }
+
 /* dark mode for media-body */
 /* body.dark-theme .media-body {
     color: #000000;
@@ -234,10 +235,14 @@ body.dark-theme .table {
 }
 
 body.dark-theme h2.account.heading {
-    color: #000000;
+    color: #ffffff;
 }
 
 /* dark mode col-md-8 h2 */
 body.dark-theme .col-md-8 h1 {
+    color: #ffffff;
+}
+/* darkmode border-bottom mb-4 legend */
+body.dark-theme .border-bottom.mb-4 legend {
     color: #ffffff;
 }

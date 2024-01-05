@@ -279,6 +279,11 @@ def delete(song_id):
 
     # delete the artist if no songs are associated with him/her
     delete_artist(song.artist_id)
+
+    # delete all likes associated with the song
+    for like in song.likes:
+        db.session.delete(like)
+
     # delete the song from database
     db.session.delete(song)
     db.session.commit()
@@ -551,3 +556,14 @@ def like_song(song_id):
     db.session.commit()
     like_count = len(song.likes)  # Get the new like count
     return jsonify({'liked': liked, 'like_count': like_count})
+
+
+@songs.route('/remove_song_from_playlist/<int:playlist_id>/<int:song_id>', methods=['POST'])
+@login_required
+def remove_song_from_playlist(playlist_id, song_id):
+    playlist = Playlist.query.get_or_404(playlist_id)
+    song = Song.query.get_or_404(song_id)
+    if song in playlist.songs:
+        playlist.songs.remove(song)
+        db.session.commit()
+    return redirect(url_for('songs.playlist', playlist_id=playlist.id))
