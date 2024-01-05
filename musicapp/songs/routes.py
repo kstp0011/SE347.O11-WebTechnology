@@ -7,7 +7,7 @@ from sqlalchemy import or_
 from sqlalchemy.exc import SQLAlchemyError
 import eyed3
 
-from musicapp.models import Song, Artist_info, User, Like, Comment, Reply
+from musicapp.models import Song, Artist_info, User, Like, Comment, Reply, Playlist
 from musicapp import db
 from musicapp.songs.forms import SongForm, SearchForm, SongMetadataForm, CommentForm, ReplyForm
 from musicapp.songs.utils import save_song, search_music
@@ -468,3 +468,10 @@ def detect_music():
     }
     result = requests.post('https://api.audd.io/', data=data)
     return jsonify(result.json())
+
+
+@songs.route('/playlists', methods=['GET'])
+@login_required
+def playlists():
+    playlists = Playlist.query.filter_by(user_id=current_user.id).all()
+    return render_template('playlists.html', playlists=playlists)

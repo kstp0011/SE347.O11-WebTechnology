@@ -93,3 +93,19 @@ class Reply(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     comment_id = db.Column(db.Integer, db.ForeignKey('comment.id'))
     user = db.relationship('User', backref='replies')
+
+
+playlist_song = db.Table('playlist_song',
+                         db.Column('song_id', db.Integer, db.ForeignKey(
+                             'song.id'), primary_key=True),
+                         db.Column('playlist_id', db.Integer, db.ForeignKey(
+                             'playlist.id'), primary_key=True)
+                         )
+
+
+class Playlist(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    songs = db.relationship('Song', secondary=playlist_song,
+                            backref=db.backref('playlists', lazy='dynamic'))

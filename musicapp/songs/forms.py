@@ -44,3 +44,8 @@ class CommentForm(FlaskForm):
 class ReplyForm(FlaskForm):
     reply = StringField('Reply', validators=[DataRequired()])
     submit = SubmitField('Reply')
+
+
+class PlaylistForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    submit = SubmitField('Create Playlist')
