@@ -14,5 +14,9 @@
         </select>
         <input type="submit" value="Add Song">
     </form>
+    {% if playlist.songs %}
     <a href="{{ url_for('songs.play_playlist', playlist_id=playlist.id, song_id=playlist.songs[0].id) }}" class="btn btn-primary mb-3">Play Playlist</a>
-{% endblock content %}
+    {% else %}
+    <p>This playlist has no songs.</p>
+    {% endif %}
+{% endblock %}
