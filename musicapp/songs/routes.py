@@ -9,7 +9,7 @@ import eyed3
 
 from musicapp.models import Song, Artist_info, User, Like, Comment, Reply, Playlist
 from musicapp import db
-from musicapp.songs.forms import SongForm, SearchForm, SongMetadataForm, CommentForm, ReplyForm
+from musicapp.songs.forms import SongForm, SearchForm, SongMetadataForm, CommentForm, ReplyForm, PlaylistForm
 from musicapp.songs.utils import save_song, search_music
 from musicapp.artist.routes import delete_artist
 import base64
@@ -470,8 +470,36 @@ def detect_music():
     return jsonify(result.json())
 
 
-@songs.route('/playlists', methods=['GET'])
+# playlists
+@songs.route('/playlist/new', methods=['GET', 'POST'])
 @login_required
-def playlists():
-    playlists = Playlist.query.filter_by(user_id=current_user.id).all()
-    return render_template('playlists.html', playlists=playlists)
+def new_playlist():
+    form = PlaylistForm()
+    if form.validate_on_submit():
+        playlist = Playlist(name=form.name.data, user_id=current_user.id)
+        db.session.add(playlist)
+        db.session.commit()
+        flash('Your playlist has been created!', 'success')
+        return redirect(url_for('songs.playlist', playlist_id=playlist.id))
+    return render_template('create_playlist.html', title='New Playlist', form=form)
+
+
+@songs.route("/playlist/<int:playlist_id>")
+@login_required
+def playlist(playlist_id):
+    playlist = Playlist.query.get_or_404(playlist_id)
+    if playlist.user_id != current_user.id:
+        abort(403)
+    return render_template('playlist.html', title=playlist.name, playlist=playlist)
+
+
+@songs.route("/playlist/<int:playlist_id>/add", methods=['POST'])
+@login_required
+def add_song_to_playlist(playlist_id):
+    song_id = request.form.get('song_id')
+    song = Song.query.get(song_id)
+    playlist = Playlist.query.get(playlist_id)
+    playlist.songs.append(song)
+    db.session.commit()
+    flash('Song added to playlist!', 'success')
+    return redirect(url_for('songs.playlist', playlist_id=playlist_id))

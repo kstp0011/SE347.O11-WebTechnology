@@ -36,13 +36,66 @@
                 {% if page_num %}
                   {% if songs.page == page_num %}
                     <li class="page-item active">
-                      <a class="page-link"
-                         href="{{ url_for('main.collection', page=page_num) }}">{{ page_num }}</a>
+                      <a class="page-link" href="{{ url_for('main.collection', songs_page=page_num) }}">{{ page_num }}</a>
                     </li>
                   {% else %}
                     <li class="page-item">
-                      <a class="page-link"
-                         href="{{ url_for('main.collection', page=page_num) }}">{{ page_num }}</a>
+                      <a class="page-link" href="{{ url_for('main.collection', songs_page=page_num) }}">{{ page_num }}</a>
+                    </li>
+                  {% endif %}
+                {% else %}
+                  <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                  </li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </nav>
+        {% endif %}
+      </div>
+    </article>
+    <legend class="border-bottom mb-4">
+      Playlists
+    </legend>
+    <article class="media content-section">
+      <div class="media-body">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Playlist Name</th>
+              <th scope="col">Number of Songs</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for playlist in playlists.items %}
+              <tr class="my-4">
+                <td scope="row">{{ ((playlists.page - 1) * playlists.per_page) + loop.index }}</td>
+                <td>
+                  <a href="{{ url_for('songs.playlist', playlist_id=playlist.id) }}"
+                    class="song-body text-decoration-none">{{ playlist.name }}</a>
+                </td>
+                <td>{{ playlist.songs|length }}</td>
+                <td>
+                  <a href="{{ url_for('songs.playlist', playlist_id=playlist.id) }}" class="btn btn-primary mb-3">Open Playlist</a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <a href="{{ url_for('songs.new_playlist') }}" class="btn btn-primary mb-3">Create Playlist</a>
+        {% if playlists.pages > 1 %}
+          <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+              {% for page_num in playlists.iter_pages() %}
+                {% if page_num %}
+                  {% if playlists.page == page_num %}
+                    <li class="page-item active">
+                      <a class="page-link" href="{{ url_for('main.collection', playlists_page=page_num) }}">{{ page_num }}</a>
+                    </li>
+                  {% else %}
+                    <li class="page-item">
+                      <a class="page-link" href="{{ url_for('main.collection', playlists_page=page_num) }}">{{ page_num }}</a>
                     </li>
                   {% endif %}
                 {% else %}

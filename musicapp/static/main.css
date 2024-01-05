@@ -6,7 +6,7 @@ body {
 
 /* dark themes */
 body.dark-theme {
-    background-color: #191414;
+    background-color: #000000;
     color: #ffffff;
 }
 #theme-toggle {
@@ -77,11 +77,11 @@ body.dark-theme .site-header .navbar-nav .nav-link {
 }
 body.dark-theme .btn.btn-dark {
     background-color: #ffffff; /* Change this to the color you want in dark mode */
-    color: #000000; /* Change this to the color you want for the text in dark mode */
+    color: #191414; /* Change this to the color you want for the text in dark mode */
 }
 
 .content-section {
-    background: #ffffff;
+    background: transparent;
     padding: 10px 20px;
     border: 1px solid #dddddd;
     border-radius: 3px;
