@@ -126,6 +126,49 @@
         </div>
     </div>
 </article>
+<!-- query button -->
+<button id="detect-button" class="btn btn-outline-info">Detect Music</button>
+
+<!-- song info display area -->
+<div id="song-info"></div>
+
+<!-- query function -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$("#detect-button").click(function() {
+    console.log("Button clicked");
+    var filename = "{{ song.filename }}";
+    console.log("Filename: " + filename);
+    $.ajax({
+        url: '/detect_music',
+        type: 'POST',
+        data: { 'filename': filename },
+        success: function(data) {
+            var songInfo = document.getElementById('song-info');
+            if (data.result) {
+                songInfo.innerHTML = 'Title: ' + data.result.title + ', Artist: ' + data.result.artist;
+                if (data.result.album) {
+                    songInfo.innerHTML += ', Album: ' + data.result.album;
+                }
+                if (data.result.release_date) {
+                    songInfo.innerHTML += ', Release Date: ' + data.result.release_date;
+                }
+                if (data.result.song_link) {
+                    songInfo.innerHTML += ', <a href="' + data.result.song_link + '">Song Link</a>';
+                }
+                if (data.result.apple_music && data.result.apple_music.url) {
+                    songInfo.innerHTML += ', <a href="' + data.result.apple_music.url + '">Apple Music Link</a>';
+                }
+                if (data.result.spotify && data.result.spotify.external_urls && data.result.spotify.external_urls.spotify) {
+                    songInfo.innerHTML += ', <a href="' + data.result.spotify.external_urls.spotify + '">Spotify Link</a>';
+                }
+            } else {
+                songInfo.innerHTML = 'Cannot find';
+            }
+        }
+    });
+});
+</script>
 <!-- Modal -->
 <div
     class="modal fade"
@@ -165,7 +208,6 @@
     </div>
 </div>
 <!-- like script -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
     $(document).ready(function() {
         $('#like-form').submit(function(e) {

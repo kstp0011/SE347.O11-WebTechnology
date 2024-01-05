@@ -434,17 +434,36 @@ def reply(comment_id):
 # api for music detection
 
 
+# @songs.route('/detect_music', methods=['POST'])
+# def detect_music():
+#     filename = request.form['filename']  # Get the filename from the request
+#     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+#     with open(file_path, "rb") as audio_file:
+#         encoded_string = base64.b64encode(audio_file.read()).decode('utf-8')
+
+#     data = {
+#         'audio': encoded_string,
+#         'return': 'apple_music,spotify',
+#         'api_token': '4975ba04425b8788ff0ba2cce9e1f31e'
+#     }
+#     result = requests.post('https://api.audd.io/', data=data)
+#     return jsonify(result.json())
+
 @songs.route('/detect_music', methods=['POST'])
 def detect_music():
-    filename = request.form['filename']  # Get the filename from the request
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    print("Received request")
+    filename = request.form.get('filename')
+    print("Filename: " + filename)
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 
-    with open(file_path, "rb") as audio_file:
+    with open(filepath, "rb") as audio_file:
         encoded_string = base64.b64encode(audio_file.read()).decode('utf-8')
 
     data = {
         'audio': encoded_string,
         'return': 'apple_music,spotify',
+        # Replace 'test' with your actual API token
         'api_token': '4975ba04425b8788ff0ba2cce9e1f31e'
     }
     result = requests.post('https://api.audd.io/', data=data)
