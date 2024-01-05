@@ -250,12 +250,6 @@ $("#detect-button").click(function() {
                             '<div class="card-body">' +
                                 '<h5 class="card-title">' + response.user.username + '</h5>' +
                                 '<p class="card-text">' + response.text + '</p>' +
-                                '<form class="reply-form" action="/songs/reply/' + response.comment_id + '" method="post" class="mt-3">' +
-                                    '<div class="input-group">' +
-                                        '<textarea name="text" class="form-control" placeholder="Write a reply..." required></textarea>' +
-                                        '<button type="submit" class="btn btn-primary">Reply</button>' +
-                                    '</div>' +
-                                '</form>' +
                             '</div>' +
                         '</div>'
                     );

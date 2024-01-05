@@ -1,25 +1,35 @@
 body {
-    background: #fafafa;
-    color: #212529;
+    background: #ffffff;
+    color: #191414;
     margin-top: 5rem;
 }
 
 /* dark themes */
 body.dark-theme {
-    background-color: #212529;
+    background-color: #191414;
     color: #ffffff;
 }
 #theme-toggle {
     margin-right: 20px;
+    color: #000000; /* Change this to the color you want in light mode */
+    border-color: #000000;
+}
+body.dark-theme #theme-toggle {
+    color: #ffffff; /* Change this to the color you want in dark mode */
+    border-color: #ffffff;
 }
 body.dark-theme .form-group div,
 body.dark-theme .form-group legend {
-    color: #212529 !important;
+    color: #191414 !important;
 }
 body.dark-theme .article-metadata legend {
-    color: #212529 !important;
+    color: #191414 !important;
 }
-
+body.dark-theme .btn btn-dark {
+    color: #ffffff !important;
+    background-color: #191414 !important;
+    border-color: #191414 !important;
+}
 /* ends */
 h1,
 h2,
@@ -27,13 +37,17 @@ h3,
 h4,
 h5,
 h6 {
-    color: #212529;
+    color: #191414;
 }
 
 /* nav baradjustment */
-nav {
-    background-color: #000000 !important;
+/* nav {
+    background-color: #000000 !important; 
     color: #ffffff !important;
+} */
+nav {
+    background-color: transparent !important;
+    color: #191414 !important;
 }
 /* ends */
 
@@ -42,15 +56,25 @@ nav {
 }
 
 .site-header .navbar-nav .nav-link {
-    color: #cbd5db;
+    color: #191414;
 }
 
 .site-header .navbar-nav .nav-link:hover {
-    color: #ffffff;
+    color: #191414;
 }
 
 .site-header .navbar-nav .nav-link.active {
     font-weight: 500;
+}
+
+body.dark-theme .navbar-brand.mr-4 {
+    color: #ffffff; /* Change this to the color you want in dark mode */
+}
+body.dark-theme .site-header .navbar-nav .nav-link {
+    color: #ffffff;
+}
+.navbar-brand.mr-4 {
+    color: #191414; /* Change this to the color you want in dark mode */
 }
 
 .content-section {
@@ -203,7 +227,7 @@ body.dark-theme .col-md-8 h2 {
 
 body.dark-theme .table {
     background-color: #ffffff;
-    border-color: #212529;
+    border-color: #191414;
 }
 
 body.dark-theme h2.account.heading {
