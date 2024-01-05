@@ -2,6 +2,6 @@ __pycache__/
 env/
 test.py
 
-musicapp/static/uploads/
-musicapp/static/artist_images/
-instance/site.db
+# musicapp/static/uploads/
+# musicapp/static/artist_images/
+# instance/site.db
