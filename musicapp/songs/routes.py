@@ -12,6 +12,8 @@ from musicapp import db
 from musicapp.songs.forms import SongForm, SearchForm, SongMetadataForm, CommentForm, ReplyForm
 from musicapp.songs.utils import save_song, search_music
 from musicapp.artist.routes import delete_artist
+import base64
+from werkzeug.utils import secure_filename
 
 import requests
 
@@ -174,7 +176,7 @@ def song_metadata(id):
         form.title.data = song.title
         form.artist.data = song.artist  # get the name of the artist
         form.album.data = song.album
-    return render_template('song_metadata.html', title='Edit song details', form=form)
+    return render_template('song_metadata.html', title='Edit song details', form=form, filename=song.filename)
 
 
 # @songs.route('/song/play/<int:song_id>')
@@ -328,12 +330,12 @@ def search():
 
     return render_template('search.html', form=form)
 
-
-@songs.route('/api/search', methods=['POST'])
-def search_music_route():
-    search_query = request.json.get('query', '')
-    results = search_music(search_query)
-    return jsonify(results)
+# old api search engine
+# @songs.route('/api/search', methods=['POST'])
+# def search_music_route():
+#     search_query = request.json.get('query', '')
+#     results = search_music(search_query)
+#     return jsonify(results)
 
 
 # @songs.route('/like/<int:song_id>', methods=['POST'])
@@ -428,3 +430,22 @@ def reply(comment_id):
     db.session.add(reply)
     db.session.commit()
     return jsonify({'text': reply.text, 'user': {'username': current_user.username}, 'comment_id': comment_id})
+
+# api for music detection
+
+
+@songs.route('/detect_music', methods=['POST'])
+def detect_music():
+    filename = request.form['filename']  # Get the filename from the request
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+    with open(file_path, "rb") as audio_file:
+        encoded_string = base64.b64encode(audio_file.read()).decode('utf-8')
+
+    data = {
+        'audio': encoded_string,
+        'return': 'apple_music,spotify',
+        'api_token': '4975ba04425b8788ff0ba2cce9e1f31e'
+    }
+    result = requests.post('https://api.audd.io/', data=data)
+    return jsonify(result.json())

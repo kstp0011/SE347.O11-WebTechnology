@@ -230,7 +230,7 @@
     {% for comment in comments %}
     <div class="card mb-3">
         <div class="card-body">
-            <h5 class="card-title">{{ comment.user.username }}</h5>
+            <h4 class="card-title"><strong>{{ comment.user.username }}</strong></h4>
             <p class="card-text">{{ comment.text }}</p>
             <button class="show-replies btn btn-primary">Show/Hide Replies</button>
             <!-- Replies -->

@@ -183,3 +183,14 @@ a.article-title:hover {
 .replies {
     display: none;
 }
+
+.card-title {
+    font-size: 1.5rem;
+    /* text color cyan*/
+    color: #007bff;
+}
+.card-text {
+    font-size: 1.2rem;
+    /* text color cyan*/
+    color: #333333;
+}
