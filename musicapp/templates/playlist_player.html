@@ -96,7 +96,7 @@
             <ul class="song-list">
                 {% for song in playlist.songs %}
                 <li>
-                    <a class="song-link" href="{{ url_for('songs.song', song_id=song.id) }}">
+                    <a class="song-link" href="{{ url_for('songs.play_playlist', playlist_id=playlist.id, song_id=song.id) }}">
                         {{ song.title }}
                     </a>
                 </li>
