@@ -66,15 +66,18 @@ nav {
 .site-header .navbar-nav .nav-link.active {
     font-weight: 500;
 }
-
+.navbar-brand.mr-4 {
+    color: #191414; /* Change this to the color you want in dark mode */
+}
 body.dark-theme .navbar-brand.mr-4 {
     color: #ffffff; /* Change this to the color you want in dark mode */
 }
 body.dark-theme .site-header .navbar-nav .nav-link {
     color: #ffffff;
 }
-.navbar-brand.mr-4 {
-    color: #191414; /* Change this to the color you want in dark mode */
+body.dark-theme .btn.btn-dark {
+    background-color: #ffffff; /* Change this to the color you want in dark mode */
+    color: #000000; /* Change this to the color you want for the text in dark mode */
 }
 
 .content-section {
