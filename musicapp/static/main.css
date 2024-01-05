@@ -194,3 +194,18 @@ a.article-title:hover {
     /* text color cyan*/
     color: #333333;
 }
+
+/* class col-md-8 h2 tag dark mode fix */
+body.dark-theme .col-md-8 h2 {
+    color: #ffffff;
+}
+/* dark mode serach */
+
+body.dark-theme .table {
+    background-color: #ffffff;
+    border-color: #212529;
+}
+
+body.dark-theme h2.account.heading {
+    color: #000000;
+}
